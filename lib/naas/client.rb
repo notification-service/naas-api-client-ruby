@@ -136,6 +136,10 @@ module Naas
       @routes
     end
 
+    def self.rel_for(rel)
+      "%s/%s" % [self.api_host, rel]
+    end
+
     # Helper method to return the API HOST
     #
     # @return [String] API URI
