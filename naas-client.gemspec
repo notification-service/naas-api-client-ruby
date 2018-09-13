@@ -7,10 +7,10 @@ Gem::Specification.new do |spec|
   spec.name          = "naas-client"
   spec.version       = Naas::Client::VERSION
   spec.authors       = ["Nate Klaiber"]
-  spec.email         = ["nate@theklaibers.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.email         = ["nate@deviceindependent.com"]
+  spec.summary       = %q{ Client for the NAAS API.}
+  spec.description   = %q{ Client for interacting with the NAAS API.}
+  spec.homepage      = "https://github.com/quicksprout/naas-api-client-ruby.git"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -18,6 +18,17 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.7"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency("bundler", "~> 1.7")
+  spec.add_development_dependency("rake", "~> 10.0")
+  spec.add_development_dependency("terminal-table")
+  spec.add_development_dependency("rspec")
+  spec.add_development_dependency("yard")
+  spec.add_development_dependency("webmock")
+
+  spec.add_dependency('faraday')
+  spec.add_dependency('faraday_middleware')
+  spec.add_dependency('multi_json')
+  spec.add_dependency('dotenv')
+  spec.add_dependency('addressable')
+  spec.add_dependency('restless_router')
 end
