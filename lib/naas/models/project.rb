@@ -10,6 +10,47 @@ module Naas
       # @return [Naas::Models::Project]
       def initialize(attributes={})
         @attributes = attributes
+
+        @errors = []
+      end
+
+      def errors
+        @errors
+      end
+
+      def errors?
+        @errors.any?
+      end
+
+      def valid?
+        !self.errors?
+      end
+
+      def save
+        record_params = {
+          :name        => self.name,
+          :description => self.description
+        }
+
+        request = Naas::Requests::Projects.create(record_params)
+
+        request.on(:success) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', {})
+
+          return self.class.new(response_data)
+        end
+
+        request.on(:failure) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', {})
+
+          error = Naas::Models::Error.new(response_data)
+
+          error.errors.each { |error_item| @errors.push(error_item.message) }
+
+          self
+        end
       end
 
       # Returns the ID
