@@ -19,9 +19,32 @@ module Naas
         route = Naas::Client.routes.find_by_rel(self.rel)
         url   = route.url_for
 
-        request  = Naas::Client.connection.get do |req|
+        request = Naas::Client.connection.get do |req|
           req.url(url)
           req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+        end
+
+        Naas::Response.new(request)
+      end
+
+      # Create a new project
+      #
+      # @param params [Hash] Attributes for the domain model
+      #
+      # @return [Naas::Response]
+      def self.create(params={})
+        route = Naas::Client.routes.find_by_rel(self.rel)
+        url   = route.url_for
+
+        request_body = {
+          :project => params
+        }
+
+        request = Naas::Client.connection.post do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+          req.headers['Content-Type'] = 'application/json'
+          req.body = MultiJson.dump(request_body)
         end
 
         Naas::Response.new(request)
