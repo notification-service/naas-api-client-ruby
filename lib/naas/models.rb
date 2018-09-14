@@ -1,5 +1,9 @@
 require File.expand_path('../models/directory', __FILE__)
 
+require File.expand_path('../models/error', __FILE__)
+require File.expand_path('../models/error_items', __FILE__)
+require File.expand_path('../models/error_item', __FILE__)
+
 require File.expand_path('../models/links', __FILE__)
 require File.expand_path('../models/link', __FILE__)
 
