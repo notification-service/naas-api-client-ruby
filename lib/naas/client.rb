@@ -2,6 +2,7 @@ require 'dotenv'
 Dotenv.load
 
 require 'logger'
+require 'date'
 require 'multi_json'
 require 'restless_router'
 require 'naas/client/version'
@@ -136,6 +137,14 @@ module Naas
       @routes
     end
 
+    # Returns the link relationship for
+    # a specified path.
+    #
+    # Custom link relationships are fully qualified
+    # URIS, but in this case we only care to reference
+    # the path and add the API host.
+    #
+    # @return [String]
     def self.rel_for(rel)
       "%s/%s" % [self.api_host, rel]
     end
