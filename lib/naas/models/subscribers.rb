@@ -3,7 +3,7 @@ module Naas
     class Subscribers
       include Enumerable
 
-      # Return an instance of the campaigns
+      # Return an instance of the subscribers
       #
       # @param collection [Array]
       #
@@ -29,7 +29,7 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the campaigns: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.info { ("Failure retrieving the subscribers: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -51,7 +51,7 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the campaign: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber: %s" % [resp.status]) }
         end
 
         Naas::Models::Subscriber.new(klass_attributes)

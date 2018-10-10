@@ -5,8 +5,6 @@ module Naas
 
       # Returns an instance of the Subscriber
       #
-      # has_many :campaign_email_templates
-      #
       # @param attributes [Hash]
       #
       # @return [Naas::Models::Subscriber]
@@ -24,7 +22,7 @@ module Naas
       #
       # @return [String]
       def first_name
-        @attributes['name']
+        @attributes['first_name']
       end
 
       # Returns the last name
