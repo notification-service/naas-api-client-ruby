@@ -37,6 +37,25 @@ module Naas
 
         Naas::Response.new(request)
       end
+
+      # Preview the instance of a email_notification
+      #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
+      # @return [Naas::Response]
+      def self.preview_html(id, params={})
+        rel   = Naas::Client.rel_for('rels/email-notification-preview')
+        route = Naas::Client.routes.find_by_rel(rel)
+        url   = route.url_for(params.merge!(id: id))
+
+        request = Naas::Client.connection.get do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.html; version=1'
+        end
+
+        Naas::Response.new(request)
+      end
     end
   end
 end
