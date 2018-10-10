@@ -31,7 +31,7 @@ module Naas
       def self.retrieve(id, params={})
         rel   = Naas::Client.rel_for(INSTANCE_REL)
         route = Naas::Client.routes.find_by_rel(rel)
-        url   = route.url_for
+        url   = route.url_for(params.merge!(id: id))
 
         request = Naas::Client.connection.get do |req|
           req.url(url)
