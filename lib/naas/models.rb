@@ -16,6 +16,9 @@ require File.expand_path('../models/campaign', __FILE__)
 require File.expand_path('../models/campaign_email_templates', __FILE__)
 require File.expand_path('../models/campaign_email_template', __FILE__)
 
+require File.expand_path('../models/accounts', __FILE__)
+require File.expand_path('../models/account', __FILE__)
+
 module Naas
   module Models
   end
