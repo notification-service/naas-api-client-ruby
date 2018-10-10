@@ -12,6 +12,13 @@ module Naas
         @attributes = attributes
       end
 
+      # Deliver for this instance
+      #
+      # @return [Naas::Response]
+      def deliver
+        Naas::Requests::EmailNotifications.deliver(self.id)
+      end
+
       #
       # @return [Integer]
       def id
