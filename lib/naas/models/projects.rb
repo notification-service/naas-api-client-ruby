@@ -35,6 +35,24 @@ module Naas
         self.new(klass_attributes)
       end
 
+      # Helper method to retrieve from the request
+      #
+      # @return [Naas::Models::Project]
+      def self.retrieve(id, params={})
+        request = Naas::Requests::Projects.retrieve(id, params)
+
+        klass_attributes = {}
+
+        request.on(:success) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', {})
+
+          klass_attributes = response_data
+        end
+
+        Naas::Models::Project.new(klass_attributes)
+      end
+
       def each(&block)
         internal_collection.each(&block)
       end

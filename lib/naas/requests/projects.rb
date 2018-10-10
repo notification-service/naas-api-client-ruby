@@ -1,14 +1,8 @@
 module Naas
   module Requests
     class Projects
-      REL_PATH = 'rels/projects'.freeze
-
-      # Retrieve the rel with the API host
-      #
-      # @return [String]
-      def self.rel
-        Naas::Client.rel_for(REL_PATH)
-      end
+      COLLECTION_REL = 'rels/projects'.freeze
+      INSTANCE_REL   = 'rels/project'.freeze
 
       # Retrieve the list of projects
       #
@@ -16,7 +10,27 @@ module Naas
       #
       # @return [Naas::Response]
       def self.list(params={})
-        route = Naas::Client.routes.find_by_rel(self.rel)
+        rel   = Naas::Client.rel_for(COLLECTION_REL)
+        route = Naas::Client.routes.find_by_rel(rel)
+        url   = route.url_for
+
+        request = Naas::Client.connection.get do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+        end
+
+        Naas::Response.new(request)
+      end
+
+      # Retrieve the instance of a project
+      #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
+      # @return [Naas::Response]
+      def self.retrieve(id, params={})
+        rel   = Naas::Client.rel_for(INSTANCE_REL)
+        route = Naas::Client.routes.find_by_rel(rel)
         url   = route.url_for
 
         request = Naas::Client.connection.get do |req|
