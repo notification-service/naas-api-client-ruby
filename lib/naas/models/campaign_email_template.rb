@@ -1,15 +1,15 @@
 module Naas
   module Models
-    class Campaign
+    class CampaignEmailTemplate
       include Comparable
 
-      # Returns an instance of the Campaign
+      # Returns an instance of the Campaign Email Template
       #
       # has_many :campaign_email_templates
       #
       # @param attributes [Hash]
       #
-      # @return [Naas::Models::Campaign]
+      # @return [Naas::Models::CampaignEmailTemplate]
       def initialize(attributes={})
         @attributes = attributes
       end
@@ -20,11 +20,11 @@ module Naas
         @attributes['id']
       end
 
-      # Returns the associated project id
+      # Returns the associated campaign id
       #
       # @return [Integer]
-      def project_id
-        @attributes['project_id']
+      def campaign_id
+        @attributes['campaign_id']
       end
 
       # Returns the name
@@ -41,36 +41,41 @@ module Naas
         @attributes['description']
       end
 
-      # Return the associated campaign email templates
-      # attributes
+      # Returns the subject template
       #
-      # @return [Array]
-      def campaign_email_templates_attributes
-        @attributes.fetch('campaign_email_templates', [])
+      # @return [String]
+      def subject
+        @attributes['subject']
       end
 
-      # Returns true if there are campaign email template
-      # attributes
+      # Returns the from email address
       #
-      # @return [Boolean]
-      def campaign_email_templates_attributes?
-        self.campaign_email_templates_attributes.any?
+      # @return [String]
+      def from_email_address
+        @attributes['from_email_address']
       end
 
-      # Returns the campaign email templates
+      # Returns the from name
       #
-      # @return [Naas::Models::CampaignEmailTemplates]
-      def campaign_email_templates
-        if self.campaign_email_templates_attributes?
-          Naas::Models::CampaignEmailTemplates.new(self.campaign_email_templates)
-        else
-          Naas::Models::CampaignEmailTemplates.list_by_campaign_id(self.id)
-        end
+      # @return [String]
+      def from_name
+        @attributes['from_name']
       end
 
-      def campaign_email_templates?
-        self.campaign_email_templates.any?
+      # Returns the HTML body
+      #
+      # @return [String]
+      def html_body
+        @attributes['html_body']
       end
+
+      # Returns the plain text body
+      #
+      # @return [String]
+      def text_body
+        @attributes['text_body']
+      end
+
 
       # Returns the created at timestamp
       #
