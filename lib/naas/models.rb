@@ -25,6 +25,9 @@ require File.expand_path('../models/subscriber', __FILE__)
 require File.expand_path('../models/email_notifications', __FILE__)
 require File.expand_path('../models/email_notification', __FILE__)
 
+require File.expand_path('../models/account_smtp_settings', __FILE__)
+require File.expand_path('../models/account_smtp_setting', __FILE__)
+
 module Naas
   module Models
   end
