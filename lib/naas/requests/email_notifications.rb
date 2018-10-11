@@ -19,7 +19,7 @@ module Naas
         Naas::Response.new(request)
       end
 
-      # Retrieve the instance of a email_notification
+      # Retrieve the instance of a email notification
       #
       # @param id [Integer]
       # @param params [Hash]
@@ -38,7 +38,31 @@ module Naas
         Naas::Response.new(request)
       end
 
-      # Deliver the instance of a email_notification
+      # Update an existing record
+      #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
+      # @return [Naas::Response]
+      def self.update(id, params={})
+        rel   = Naas::Client.rel_for('rels/email-notification')
+        route = Naas::Client.routes.find_by_rel(rel)
+        url   = route.url_for(params.merge!(id: id))
+
+        request_body = {
+          :email_notification => params
+        }
+
+        request = Naas::Client.connection.put do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+          req.body = MultiJson.dump(request_body)
+        end
+
+        Naas::Response.new(request)
+      end
+
+      # Deliver the instance of a email notification
       #
       # @param id [Integer]
       # @param params [Hash]
@@ -57,7 +81,7 @@ module Naas
         Naas::Response.new(request)
       end
 
-      # Preview the instance of a email_notification
+      # Preview the instance of a email notification
       #
       # @param id [Integer]
       # @param params [Hash]
