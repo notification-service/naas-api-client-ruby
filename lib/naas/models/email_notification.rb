@@ -50,11 +50,7 @@ module Naas
       #
       # @return [MultiJson]
       def content
-        begin
-          MultiJson.load(@attributes['content'])
-        rescue
-          {}
-        end
+        @attributes['content']
       end
 
       # Returns the subject
