@@ -35,6 +35,31 @@ module Naas
         self.new(klass_attributes)
       end
 
+      # Helper method to create from the
+      # request
+      #
+      # @note: Will delegate to the internal model `errors`
+      #
+      # @return [Naas::Models::SubscriberEmailAddresses]
+      def self.create(params={})
+        request = Naas::Requests::SubscriberEmailAddresses.create(params)
+
+        klass_attributes = {}
+
+        request.on(:success) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', [])
+
+          klass_attributes = response_data
+        end
+
+        request.on(:failure) do |resp|
+          Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber email addresses: %s" % [resp.status]) }
+        end
+
+        Naas::Models::SubscriberEmailAddress.new(klass_attributes)
+      end
+
       # Helper method to retrieve from the request
       #
       # @return [Naas::Models::SubscriberEmailAddress]
