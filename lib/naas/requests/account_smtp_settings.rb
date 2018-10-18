@@ -49,7 +49,7 @@ module Naas
         url   = route.url_for
 
         request_body = {
-          :account_smtp_setting => params
+          :smtp_settings => params
         }
 
         request = Naas::Client.connection.post do |req|
