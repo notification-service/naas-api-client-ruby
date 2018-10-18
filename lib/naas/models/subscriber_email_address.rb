@@ -1,13 +1,13 @@
 module Naas
   module Models
-    class Subscriber
+    class SubscriberEmailAddress
       include Comparable
 
-      # Returns an instance of the Subscriber
+      # Returns an instance of the SubscriberEmailAddress
       #
       # @param attributes [Hash]
       #
-      # @return [Naas::Models::Subscriber]
+      # @return [Naas::Models::SubscriberEmailAddress]
       def initialize(attributes={})
         @attributes = attributes
       end
@@ -19,40 +19,36 @@ module Naas
         @attributes['id']
       end
 
-      # Returns the first name
+      # Returns the subscriber id
       #
-      # @return [String]
-      def first_name
-        @attributes['first_name']
+      # @return [Integer]
+      def subscriber_id
+        @attributes['subscriber_id']
       end
 
-      # Returns the last name
-      #
-      # @return [String]
-      def last_name
-        @attributes['last_name']
-      end
-
-      # Returns the full name
-      #
-      # @return [String]
-      def full_name
-        [self.first_name, self.last_name].compact.join(' ')
-      end
-
-      # Returns the primary email address value
+      # Returns the email address
       #
       # @return [String]
       def email_address
         @attributes['email_address']
       end
 
-      # Returns true if there is an email address
+      # Returns the email address hash
+      #
+      # @return [String]
+      def email_address_hash
+        @attributes['email_address_hash']
+      end
+      alias :md5 :email_address_hash
+
+      # Returns true if is the primary email
       #
       # @return [Boolean]
-      def email_address?
-        !self.email_address.nil? && !self.email_address.empty?
+      def is_primary
+        @attributes.fetch('is_primary', false)
       end
+      alias :is_primary? :is_primary
+      alias :primary? :is_primary
 
       # Returns the created at timestamp
       #

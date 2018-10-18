@@ -22,6 +22,9 @@ require File.expand_path('../models/account', __FILE__)
 require File.expand_path('../models/subscribers', __FILE__)
 require File.expand_path('../models/subscriber', __FILE__)
 
+require File.expand_path('../models/subscriber_email_addresses', __FILE__)
+require File.expand_path('../models/subscriber_email_address', __FILE__)
+
 require File.expand_path('../models/email_notifications', __FILE__)
 require File.expand_path('../models/email_notification', __FILE__)
 
