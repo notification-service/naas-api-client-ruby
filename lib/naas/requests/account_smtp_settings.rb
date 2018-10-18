@@ -37,6 +37,29 @@ module Naas
 
         Naas::Response.new(request)
       end
+
+      # Created a new record
+      #
+      # @param params [Hash]
+      #
+      # @return [Naas::Response]
+      def self.create(params={})
+        rel   = Naas::Client.rel_for('rels/smtp-settings')
+        route = Naas::Client.routes.find_by_rel(rel)
+        url   = route.url_for
+
+        request_body = {
+          :account_smtp_setting => params
+        }
+
+        request = Naas::Client.connection.post do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+          req.body = MultiJson.dump(request_body)
+        end
+
+        Naas::Response.new(request)
+      end
     end
   end
 end
