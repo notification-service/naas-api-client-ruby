@@ -73,13 +73,14 @@ module Naas
           response_data = response_body.fetch('data', {})
 
           klass_attributes = response_data
+          return Naas::Models::SubscriberEmailAddress.new(klass_attributes)
         end
 
         request.on(:failure) do |resp|
           Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber email address: %s" % [resp.status]) }
-        end
 
-        Naas::Models::SubscriberEmailAddress.new(klass_attributes)
+          return nil
+        end
       end
 
       def each(&block)
