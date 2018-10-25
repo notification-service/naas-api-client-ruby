@@ -18,6 +18,14 @@ Or install it yourself as:
 
     $ gem install naas-client
 
+## Design Notes
+An API client should be a composable object that provides both flexibility (advanced) and ease of use (novice).
+
+* It keeps concerns separated.
+* It can be used locally without the need for a connection. I may cache some responses and need to test with the JSON responses on disk. With the modeling not being bound to an HTTP connection, I can feed my JSON into the models and interact as if it had received the response from the HTTP connection.
+* It captures dependency errors in a way that it always returns consistent errors to the client. A consumer of this utility should not have to concern themselves with underlying dependencies and have to know all possible exception states. Exceptions should be localized, while also providing a detailed stack trace.
+* URIs should never be manually constructed. Once you receive the directory route you can get the rest from there. You can also cache the `routes` to use offline if needing to test against a specific link.
+
 ## Usage
 
 The client is broken down into several concerns:
