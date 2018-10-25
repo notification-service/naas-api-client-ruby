@@ -27,7 +27,7 @@ The client is broken down into several concerns:
 * [Logging](#logging): Setting up several log specifications for use with the client.
 * [Connection](#connection): This is the main HTTP/TCP connection to the underlying service.
 * [Requests](#requests): These are the raw _requests_ from the API service.
-* Responses: These are the raw _responses_ form the API service request.
+* [Responses](#responses): These are the raw _responses_ form the API service request.
 * Modeling: These are the domain models wrapped around the _response_ from the API service.
 * Utilities: Helper tools to manage the end-to-end flow
 
@@ -181,6 +181,50 @@ There are also specific `Request` objects based on the **domain models**
 => #<Faraday::Response:0x00007fee1a283308>
 ```
 
+## Responses
+These are the wrapped HTTP responses from the [requests](#requests). This object is a `delegate` to the `Faraday::Response` object and adds some additional helper utilities to manage the response. 
+
+Examples
+
+```ruby
+# List out the projects
+>> request = Naas::Requests::Projects.list
+=> #<Faraday::Response:0x00007fee1a283308>
+
+# Wrap in our Response object
+>> response = Naas::Response.new(request)
+=> #<Faraday::Response:0x00007f905326afa8>
+
+# Return the ALLOW header
+>> response.allow_header
+=> 'get,post'
+
+# Return the allowed methods
+>> response.allowed_methods
+=> ['GET', 'POST']
+
+# See if the HTTP method is allowed
+>> response.allowed?('GET')
+=> true
+
+# Use the `on` block to perform operations based on the status map
+>> response.on(:success) { |resp| puts resp.body }
+{"links"=>[{"name"=>"Campaigns", "href"=>"http://api.dev.naas.com/campaigns{?page,per_page}", "rel"=>"self", "templated"=>true}], "pagination"=>{"page"=>1, "per_page"=>10, "total"=>2, "maximum"=>250}, "data"=>[{"id"=>3, "project_id"=>1, "name"=>"Onboarding", "description"=>"Emails sent through onboarding.", "created_at"=>"2018-10-11T17:28:42Z", "updated_at"=>"2018-10-11T17:29:14Z", "links"=>[{"name"=>"Detail", "href"=>"http://api.dev.naas.com/campaigns/3", "rel"=>"self", "templated"=>false}, {"name"=>"Project", "href"=>"http://api.dev.naas.com/projects/1", "rel"=>"http://api.dev.naas.com/rels/project", "templated"=>false}, {"name"=>"Campaign Email Templates", "href"=>"http://api.dev.naas.com/campaigns/3/email-templates", "rel"=>"http://api.dev.naas.com/rels/campaign-campaign-email-templates", "templated"=>false}]}, {"id"=>1, "project_id"=>1, "name"=>"System Transactional Emails", "description"=>"All transactional systems sent by the Web Application", "created_at"=>"2018-09-13T12:47:23Z", "updated_at"=>"2018-10-11T17:25:09Z", "links"=>[{"name"=>"Detail", "href"=>"http://api.dev.naas.com/campaigns/1", "rel"=>"self", "templated"=>false}, {"name"=>"Project", "href"=>"http://api.dev.naas.com/projects/1", "rel"=>"http://api.dev.naas.com/rels/project", "templated"=>false}, {"name"=>"Campaign Email Templates", "href"=>"http://api.dev.naas.com/campaigns/1/email-templates", "rel"=>"http://api.dev.naas.com/rels/campaign-campaign-email-templates", "templated"=>false}]}]}
+=> nil
+
+# Create a block to handle a server error. In this case we have none
+>> response.on(:server_error) { |resp| puts resp.body }
+=> nil
+```
+
+The status map that is used with `on` includes:
+
+* `failure`: Anything in the 400-499 range
+* `redirect`: Anything in the 300-399 range
+* `success`: Anything in the 200-299 range
+* `server_error`: Anything in the 500-599 range
+
+By supporting these _blocks_ we can capture server errors and send them to tools like Sentry for notifications and handling. This also allows us to get detailed responses in the case of errors to report to the developers of the API Service.
 
 ## Contributing
 
