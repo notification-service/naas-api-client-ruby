@@ -25,7 +25,7 @@ The client is broken down into several concerns:
 * [Configuration](#configuration): This provides the ability to set some defaults or configure as needed per-request.
 * [Routing](#routing): By using the **API Directory**, we can show all available routes.
 * [Logging](#logging): Setting up several log specifications for use with the client.
-* Connection: This is the main HTTP/TCP connection to the underlying service.
+* [Connection](#connection): This is the main HTTP/TCP connection to the underlying service.
 * Requests: These are the raw _requests_ and _responses_ from the API service.
 * Modeling: These are the domain models wrapped around the _response_ from the API service.
 * Utilities: Helper tools to manage the end-to-end flow
@@ -112,6 +112,15 @@ As the client may be used in different contexts, this permits us to use our cust
 * `cache_logger`: When enabled and supported, this is where caching would log the _hits_ and _misses_.
 
 You may choose to point them all to the same log or have separate logs. The goal is to keep the separation of logging concerns.
+
+## Connection
+This is the main connection to the remote API Service. This is a `delegate` (wrapper) to the [`Faraday`](https://github.com/lostisland/faraday) HTTP Client Library. This connection will be set using the options specified in the [configuration](#configuration).
+
+```ruby
+# Return the HTTP connection to the service
+>> Naas::Client.connection
+=> #<Faraday::Connection:0x00007fa33f0a5908 @parallel_manager=nil, @headers={"User-Agent"=>"NAAS Ruby Gem 0.0.1", "Authorization"=>"Bearer 2b39f471c2eca67626928d5a906df629b7d13c700b74f264086ff0ae8f03", "Accept"=>"application/json", "Content-Type"=>"application/json"}, @params={}, @options=#<Faraday::RequestOptions (empty)>, @ssl=#<Faraday::SSLOptions (empty)>, @default_parallel_manager=nil, @builder=#<Faraday::RackBuilder:0x00007fa33f0a5228 @handlers=[FaradayMiddleware::ParseJson, Faraday::Response::Logger, Faraday::Adapter::NetHttp]>, @url_prefix=#<URI::HTTP http://api.dev.naas.com/>, @manual_proxy=false, @proxy=nil, @temp_proxy=nil>
+```
 
 
 ## Contributing
