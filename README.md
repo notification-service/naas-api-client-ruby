@@ -28,7 +28,7 @@ The client is broken down into several concerns:
 * [Connection](#connection): This is the main HTTP/TCP connection to the underlying service.
 * [Requests](#requests): These are the raw _requests_ from the API service.
 * [Responses](#responses): These are the raw _responses_ form the API service request.
-* Modeling: These are the domain models wrapped around the _response_ from the API service.
+* [Modeling](#modeling): These are the domain models wrapped around the _response_ from the API service.
 * Utilities: Helper tools to manage the end-to-end flow
 
 ### Tasks
@@ -225,6 +225,50 @@ The status map that is used with `on` includes:
 * `server_error`: Anything in the 500-599 range
 
 By supporting these _blocks_ we can capture server errors and send them to tools like Sentry for notifications and handling. This also allows us to get detailed responses in the case of errors to report to the developers of the API Service.
+
+## Modeling
+These are the domain models that represent the `body` from the [request](#requests). We may support different models depending on the serialization (`JSON`, `CSV`, `PNG`, etc). 
+
+> Currently we only support JSON domain models
+
+Every object that has a response has a corresponding model:
+
+* `Links`: This is a collection of `Link` objects. Wherever there is embedded hypermdia, this will be returned. Links can also be extracted from the `Link` HTTP header.
+* `Pagination`: This is the object that corresponds to any pagination information on _lists_ of data. It gives the upper and lower bounds as well as total amount.
+* `Data`: This is the main object that will correspond to a _list_ (collection) or _instance_ of an object. These models then support extended modeling.
+* `Error`: This is the object that will return `ErrorItems` (collection) and `ErrorItem` (instance) records when an HTTP error occurs. This model is always the same.
+* `Query`: This will support the query that gets sent to the server when performing a _search_. This will echo back the Query specified, based on the supported HTTP parameters
+
+> Query is not yet supported
+
+These models return the type-casted values of the attributes (`Boolean`, `DateTime`, `Date`, `Time`, `String`, `Integer`, etc).
+
+Some examples:
+
+```ruby
+# Retrieve all Account SMTP settings and return only the `data` model
+>> account_smtp_settings = Naas::Models::AccountSmtpSettings.list
+=> #<Naas::Models::AccountSmtpSettings:0x00007ffc411c8d98 @collection=[{"id"=>2, "name"=>"Gmail", "description"=>"Send with domain gmail", "user_name"=>"nateklaiber@gmail.com", "address"=>"smtp.gmail.com", "domain"=>"naas-api.deviceindependent.com", "port"=>"587", "authentication_type_value"=>"plain", "is_starttls_auto_enabled"=>true, "is_primary"=>false, "created_at"=>"2018-10-04T15:02:42Z", "updated_at"=>"2018-10-04T15:02:42Z", "links"=>[{"name"=>"Detail", "href"=>"http://api.dev.naas.com/smtp-settings/2", "rel"=>"self", "templated"=>false}]}, {"id"=>1, "name"=>"SendGrid", "description"=>"Main domain send grid", "user_name"=>"apikey", "address"=>"smtp.sendgrid.net", "domain"=>"http://naas-api.deviceindependent.com", "port"=>"587", "authentication_type_value"=>"plain", "is_starttls_auto_enabled"=>true, "is_primary"=>true, "created_at"=>"2018-10-04T15:02:30Z", "updated_at"=>"2018-10-04T15:02:51Z", "links"=>[{"name"=>"Detail", "href"=>"http://api.dev.naas.com/smtp-settings/1", "rel"=>"self", "templated"=>false}]}]>
+
+>> account_smtp_settings.count
+=> 2
+
+# Retrieve an Account SMTP setting with the specified ID
+>> account_smtp_setting = Naas::Models::AccountSmtpSettings.retrieve(2)
+=> #<Naas::Models::AccountSmtpSetting:0x00007ffc3f9fce30 @attributes={"id"=>2, "name"=>"Gmail", "description"=>"Send with domain gmail", "user_name"=>"nateklaiber@gmail.com", "address"=>"smtp.gmail.com", "domain"=>"naas-api.deviceindependent.com", "port"=>"587", "authentication_type_value"=>"plain", "is_starttls_auto_enabled"=>true, "is_primary"=>false, "created_at"=>"2018-10-04T15:02:42Z", "updated_at"=>"2018-10-04T15:02:42Z", "links"=>[{"name"=>"Detail", "href"=>"http://api.dev.naas.com/smtp-settings/2", "rel"=>"self", "templated"=>false}]}>
+
+>> account_smtp_setting.name
+=> "Gmail"
+>> account_smtp_setting.description
+=> "Send with domain gmail"
+>> account_smtp_setting.primary?
+=> false
+>> account_smtp_setting.created_at
+=> #<DateTime: 2018-10-04T15:02:42+00:00 ((2458396j,54162s,0n),+0s,2299161j)>
+
+
+```
+
 
 ## Contributing
 
