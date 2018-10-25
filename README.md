@@ -26,7 +26,8 @@ The client is broken down into several concerns:
 * [Routing](#routing): By using the **API Directory**, we can show all available routes.
 * [Logging](#logging): Setting up several log specifications for use with the client.
 * [Connection](#connection): This is the main HTTP/TCP connection to the underlying service.
-* Requests: These are the raw _requests_ and _responses_ from the API service.
+* [Requests](#requests): These are the raw _requests_ from the API service.
+* Responses: These are the raw _responses_ form the API service request.
 * Modeling: These are the domain models wrapped around the _response_ from the API service.
 * Utilities: Helper tools to manage the end-to-end flow
 
@@ -120,6 +121,64 @@ This is the main connection to the remote API Service. This is a `delegate` (wra
 # Return the HTTP connection to the service
 >> Naas::Client.connection
 => #<Faraday::Connection:0x00007fa33f0a5908 @parallel_manager=nil, @headers={"User-Agent"=>"NAAS Ruby Gem 0.0.1", "Authorization"=>"Bearer 2b39f471c2eca67626928d5a906df629b7d13c700b74f264086ff0ae8f03", "Accept"=>"application/json", "Content-Type"=>"application/json"}, @params={}, @options=#<Faraday::RequestOptions (empty)>, @ssl=#<Faraday::SSLOptions (empty)>, @default_parallel_manager=nil, @builder=#<Faraday::RackBuilder:0x00007fa33f0a5228 @handlers=[FaradayMiddleware::ParseJson, Faraday::Response::Logger, Faraday::Adapter::NetHttp]>, @url_prefix=#<URI::HTTP http://api.dev.naas.com/>, @manual_proxy=false, @proxy=nil, @temp_proxy=nil>
+```
+
+## Requests
+This is where HTTP requests get issued by the [specified connection](#connection). There are several things to note here:
+
+* Not all requests will be returning `JSON` domain models. This means it may be more important to get the raw _response_ to work with the `body` or `headers.
+* Some requests support pagination, and you can use the built-in tools of the client to _follow_ links. For example, you can use the client to **auto paginate** by following the `links` with a `rel` of `next` until none exists.
+* You should be aware of the possible HTTP status code responses. The client provides a utility to map specific codes, named ranges, or a specific code itself.
+* There are helper methods directly off of the `Client` itself to perform the basic operations.
+
+Here are some examples:
+
+```ruby
+# Make a request to the admin (response truncated for brevity)
+>> Naas::Client.get('/admin')
+=> #<Faraday::Response:0x00007fee1a1d56e0>
+
+# Make a head request
+>> Naas::Client.head('/admin')
+=> #<Faraday::Response:0x00007fee1a1d56e0>
+
+# Make a post request
+>> Naas::Client.post('/admin', MultiJson.dump('{}'))
+=> #<Faraday::Response:0x00007fee1a1d56e0>
+
+# Make a put request
+>> Naas::Client.put('/admin', MultiJson.dump('{}'))
+=> #<Faraday::Response:0x00007fee1a1d56e0>
+
+# Make an options request
+>> Naas::Client.options('/admin')
+=> #<Faraday::Response:0x00007fee1a1d56e0>
+
+# Make a delete request
+>> Naas::Client.delete('/admin')
+=> #<Faraday::Response:0x00007fee1a1d56e0>
+```
+
+You can also use a block with the `connection`:
+
+```ruby
+>> request = Naas::Client.connection.get do |req|
+	req.url('/')
+	req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+end
+=> #<Faraday::Response:0x00007fee1a21db20?
+```
+
+There are also specific `Request` objects based on the **domain models**
+
+```ruby
+# Retrieve the owned Account
+>> Naas::Requests::Accounts.retrieve
+=> #<Faraday::Response:0x00007fee1aa571b0>
+
+# Create a new Account SMTP record
+>> Naas::Requests::AccountSmtpSettings.create(name: 'Gmail')
+=> #<Faraday::Response:0x00007fee1a283308>
 ```
 
 
