@@ -22,7 +22,7 @@ Or install it yourself as:
 
 The client is broken down into several concerns:
 
-* Configuration: This provides the ability to set some defaults or configure as needed per-request.
+* [Configuration](#configuration): This provides the ability to set some defaults or configure as needed per-request.
 * [Routing](#routing): By using the **API Directory**, we can show all available routes.
 * Logging: Setting up several log specifications for use with the client.
 * Connection: This is the main HTTP/TCP connection to the underlying service.
@@ -57,6 +57,25 @@ bundle exec rake routes
 This is helpful as you need to issue or debug requests. It's also used throughout the client. One of the standards of the client is that you should **never have to manually construct a URL**. By using the directory and URI Templates we can approach this in a clean fashion.
 
 > [See Routing Documentation Below](#routing)
+
+## Configuration
+The configuration can happen per instance or at a global level per application. This permits us to use with a single `access_token` in another context, or to use multiple clients.
+
+Here is an example from a Demo Application (`/config/initializers/naas.rb`):
+
+```ruby
+require 'naas/client'
+
+Naas::Client.configure do |config|
+  config.api_host       = ENV.fetch('NAAS_API_HOST')
+  config.access_token   = ENV.fetch('NAAS_ACCESS_TOKEN')
+  config.media_type     = ENV.fetch('NAAS_MEDIA_TYPE')
+  config.logger         = Rails.logger
+  config.request_logger = Logger.new(File.expand_path('log/naas_requests.log', Rails.root))
+end
+```
+
+You can review the configuration code to see what options are available and what _sensible defaults_ are used.
 
 ## Routing
 Routing is handle by reading the Directory from the API Service. This returns all fully qualified URIs and [URI Templates](https://tools.ietf.org/html/rfc6570). By keeping the routing management in a single place, we eliminate the need to manually construct URIs with string building or string interpolation. Some examples:
