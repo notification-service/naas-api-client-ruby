@@ -37,8 +37,9 @@ The client is broken down into several concerns:
 * [Connection](#connection): This is the main HTTP/TCP connection to the underlying service.
 * [Requests](#requests): These are the raw _requests_ from the API service.
 * [Responses](#responses): These are the raw _responses_ form the API service request.
+* [Error Handling](#error-handling): These are all of the errors and exceptions that could be encountered.
 * [Modeling](#modeling): These are the domain models wrapped around the _response_ from the API service.
-* Utilities: Helper tools to manage the end-to-end flow
+* [Utilities](#utilities): Helper tools to manage the end-to-end flow
 
 ### Tasks
 There are some helpful tasks to get started:
@@ -235,6 +236,21 @@ The status map that is used with `on` includes:
 
 By supporting these _blocks_ we can capture server errors and send them to tools like Sentry for notifications and handling. This also allows us to get detailed responses in the case of errors to report to the developers of the API Service.
 
+## Error Handling
+Things can go wrong. We want to ensure a consistent fashion for handling:
+
+* HTTP errors from the API Service
+* Exceptions from our library or underlying dependencies
+
+By doing so we can ensure the consumer of this client library will not have to know about underlying dependencies or issues. We can also use this to raise custom exceptions and `Error` objects within the library. An example is:
+
+```ruby
+# Try and retrieve a record that does not exist. We want this to raise an exception instead of handling ourselves.
+>> account_smtp_setting = Naas::Requests::AccountSmtpSettings.retrieve!(200)
+=> Naas::Errors::RecordNotFoundError ({"status"=>404, "message"=>"Not Found", "errors"=>[]})
+>> 
+```
+
 ## Modeling
 These are the domain models that represent the `body` from the [request](#requests). We may support different models depending on the serialization (`JSON`, `CSV`, `PNG`, etc). 
 
@@ -274,9 +290,18 @@ Some examples:
 => false
 >> account_smtp_setting.created_at
 => #<DateTime: 2018-10-04T15:02:42+00:00 ((2458396j,54162s,0n),+0s,2299161j)>
-
-
 ```
+
+## Utilities
+There are some utilities that can be injected in the client to assist in extended _syntactic sugar_. The primary example here is the `StatusCodeMapper` that permits us to perform actions on:
+
+* An instance of a HTTP response code
+* A collection of HTTP response codes
+* A named range (`failure`, `redirect`, `success`, `server_error`)
+
+This block will be available for all specified states and it's possible to use a mixture of the above.
+
+
 
 
 ## Contributing

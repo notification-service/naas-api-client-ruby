@@ -38,6 +38,33 @@ module Naas
         Naas::Response.new(request)
       end
 
+      # Retrieve the instance of an SMTP Setting
+      #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
+      # @raises [Naas::Errors::RecordNotFoundError]
+      #
+      # @return [Naas::Response]
+      def self.retrieve!(id, params={})
+        rel   = Naas::Client.rel_for('rels/smtp-setting')
+        route = Naas::Client.routes.find_by_rel(rel)
+        url   = route.url_for(params.merge!(id: id))
+
+        request = Naas::Client.connection.get do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+        end
+
+        response = Naas::Response.new(request)
+
+        response.on(:failure) do |resp|
+          raise Naas::Errors::RecordNotFoundError.new(resp.body)
+        end
+
+        response
+      end
+
       # Created a new record
       #
       # @param params [Hash]
