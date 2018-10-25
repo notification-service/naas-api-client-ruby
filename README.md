@@ -24,7 +24,7 @@ The client is broken down into several concerns:
 
 * [Configuration](#configuration): This provides the ability to set some defaults or configure as needed per-request.
 * [Routing](#routing): By using the **API Directory**, we can show all available routes.
-* Logging: Setting up several log specifications for use with the client.
+* [Logging](#logging): Setting up several log specifications for use with the client.
 * Connection: This is the main HTTP/TCP connection to the underlying service.
 * Requests: These are the raw _requests_ and _responses_ from the API service.
 * Modeling: These are the domain models wrapped around the _response_ from the API service.
@@ -104,7 +104,14 @@ Routing is handle by reading the Directory from the API Service. This returns al
 
 By using _named routes_ (`rel`) we reduce the risk that URIs change with the API Service. We only ever need to know the `rel` and the underlying API Service will manage what that points to.
 
+## Logging
+As the client may be used in different contexts, this permits us to use our customized `Logger` and log to different contexts (`Rails.logger`, `STDOUT`, etc). There are several logs that can be specified:
 
+* `request_logger`: This will log all of the raw HTTP requests. The underlying HTTP dependency uses `Faraday` and these are the logs that our output from these requests.
+* `logger`: This is where all activity is logged within the `gem` itself
+* `cache_logger`: When enabled and supported, this is where caching would log the _hits_ and _misses_.
+
+You may choose to point them all to the same log or have separate logs. The goal is to keep the separation of logging concerns.
 
 
 ## Contributing
