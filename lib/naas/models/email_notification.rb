@@ -19,6 +19,55 @@ module Naas
         Naas::Requests::EmailNotifications.deliver(self.id)
       end
 
+      # Returns the Email Notification Deliveries
+      #
+      # @note: This will consume eager loaded attributes or
+      # issue a subsequent request.
+      #
+      # @note: This does not auto paginate. We would need to
+      # handle this from the API.
+      #
+      # @return [Naas::Models::EmailNotificationDeliveries]
+      def email_notification_deliveries(params={})
+        if self.email_notification_deliveries_attributes?
+          Naas::Models::EmailNotificationDeliveries.new(self.email_notification_deliveries_attributes)
+        else
+          Naas::Models::EmailNotificationDeliveries.list_by_email_notification_id(self.id, params)
+        end
+      end
+
+      # Returns true if there are any notification deliveries
+      #
+      # @return [Boolean]
+      def email_notification_deliveries?
+        self.email_notification_deliveries.any?
+      end
+
+      # Returns the count of the email notification deliveries
+      #
+      # @note: This could also consume a counter cache.
+      #
+      # @return [Integer]
+      def email_notification_deliveries_count
+        self.email_notification_deliveries.count
+      end
+
+      # Returns the email notification deliveries attributes
+      # if it has been eager loaded
+      #
+      # @return [Array]
+      def email_notification_deliveries_attributes
+        @attributes.fetch('email_notification_deliveries', [])
+      end
+
+      # Returns true if there are any email notification
+      # deliveries attributes
+      #
+      # @return [Boolean]
+      def email_notification_deliveries_attributes?
+        self.email_notification_deliveries_attributes.any?
+      end
+
       # Returns the ID
       #
       # @return [Integer]
