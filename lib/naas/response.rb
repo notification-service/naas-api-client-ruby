@@ -31,6 +31,18 @@ module Naas
       end
     end
 
+    def redirect?
+      STATUS_MAP[:redirect].include?(self.status)
+    end
+
+    def failure?
+      STATUS_MAP[:failure].include?(self.status)
+    end
+
+    def server_error?
+      STATUS_MAP[:server_error].include?(self.status)
+    end
+
     def __getobj__
       @_response
     end

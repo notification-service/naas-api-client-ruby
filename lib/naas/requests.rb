@@ -7,6 +7,7 @@ require File.expand_path('../requests/subscribers', __FILE__)
 require File.expand_path('../requests/subscriber_email_addresses', __FILE__)
 require File.expand_path('../requests/email_notifications', __FILE__)
 require File.expand_path('../requests/email_notification_deliveries', __FILE__)
+require File.expand_path('../requests/email_notification_statuses', __FILE__)
 require File.expand_path('../requests/account_smtp_settings', __FILE__)
 
 module Naas

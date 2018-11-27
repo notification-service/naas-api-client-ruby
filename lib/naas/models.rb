@@ -31,6 +31,9 @@ require File.expand_path('../models/email_notification', __FILE__)
 require File.expand_path('../models/email_notification_deliveries', __FILE__)
 require File.expand_path('../models/email_notification_delivery', __FILE__)
 
+require File.expand_path('../models/email_notification_statuses', __FILE__)
+require File.expand_path('../models/email_notification_status', __FILE__)
+
 require File.expand_path('../models/account_smtp_settings', __FILE__)
 require File.expand_path('../models/account_smtp_setting', __FILE__)
 

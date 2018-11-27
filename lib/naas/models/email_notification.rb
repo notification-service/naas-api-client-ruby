@@ -19,6 +19,26 @@ module Naas
         Naas::Requests::EmailNotifications.deliver(self.id)
       end
 
+      # Returns the delivery status. This is only
+      # present while the notification is being delivered. It
+      # will be a _redirect_ once it has completed.
+      #
+      # @return [Naas::Models::EmailNotificationStatus,NilClass]
+      def delivery_status
+        status = Naas::Requests::EmailNotificationStatuses.retrieve_by_email_notification_id(self.id)
+
+        if status.success?
+          Naas::Models::EmailNotificationStatuses.retrieve_by_email_notification_id(self.id)
+        end
+      end
+
+      # Returns true if there is a current delivery status
+      #
+      # @return [Boolean]
+      def delivery_status?
+        !self.delivery_status.nil?
+      end
+
       # Returns the Email Notification Deliveries
       #
       # @note: This will consume eager loaded attributes or
