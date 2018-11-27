@@ -195,6 +195,14 @@ module Naas
       end
       alias :processing? :is_processing
 
+      # Returns true if this is deliverable
+      #
+      # @return [Boolean]
+      def is_deliverable
+        @attributes.fetch('is_deliverable', false)
+      end
+      alias :deliverable? :is_deliverable
+
       # Returns the checksum of the content
       #
       # @return [String]
