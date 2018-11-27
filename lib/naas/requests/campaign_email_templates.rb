@@ -23,6 +23,7 @@ module Naas
       # Retrieve the instance of a campaign email template by campaign
       #
       # @param campaign_id [Integer]
+      # @param id [Integer]
       # @param params [Hash]
       #
       # @return [Naas::Response]
