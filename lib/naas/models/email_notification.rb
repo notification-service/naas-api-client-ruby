@@ -19,6 +19,7 @@ module Naas
         Naas::Requests::EmailNotifications.deliver(self.id)
       end
 
+      # Returns the ID
       #
       # @return [Integer]
       def id
