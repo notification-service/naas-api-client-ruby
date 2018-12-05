@@ -25,6 +25,40 @@ module Naas
         @attributes['name']
       end
 
+      # Returns the attributes for the
+      # account setting
+      #
+      # @return [Hash]
+      def account_setting_attributes
+        @attributes.fetch('account_setting', {})
+      end
+
+      # Returns true if there are account
+      # setting attributes
+      #
+      # @return [Boolean]
+      def account_setting_attributes?
+        self.account_setting_attributes.any?
+      end
+
+      # Returns the account setting
+      #
+      # @return [Naas::Models::AccountSetting]
+      def account_setting
+        @account_setting ||= if self.account_setting_attributes?
+                               Naas::Models::AccountSetting.new(self.account_setting_attributes)
+                             else
+                               Naas::Models::AccountSettings.retrieve
+                             end
+      end
+
+      # Returns true if there is an account setting
+      #
+      # @return [Boolean]
+      def account_setting?
+        self.account_setting.present?
+      end
+
       # Returns the created at timestamp
       #
       # @return [DateTime,NilClass]
