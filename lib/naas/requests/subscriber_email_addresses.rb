@@ -60,6 +60,25 @@ module Naas
 
         Naas::Response.new(request)
       end
+
+      # Retrieve the list of the subscriber email addresses by subscriber
+      #
+      # @param subscriber_id [Integer]
+      # @param params [Hash]
+      #
+      # @return [Naas::Response]
+      def self.list_by_subscriber_id(subscriber_id, params={})
+        rel   = Naas::Client.rel_for('rels/subscriber-subscriber-email-addresses')
+        route = Naas::Client.routes.find_by_rel(rel)
+        url   = route.url_for(params.merge!(subscriber_id: subscriber_id))
+
+        request = Naas::Client.connection.get do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+        end
+
+        Naas::Response.new(request)
+      end
     end
   end
 end

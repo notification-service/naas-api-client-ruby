@@ -61,11 +61,11 @@ module Naas
       #
       # @return [Naas::Models::CampaignEmailTemplates]
       def campaign_email_templates
-        if self.campaign_email_templates_attributes?
-          Naas::Models::CampaignEmailTemplates.new(self.campaign_email_templates)
-        else
-          Naas::Models::CampaignEmailTemplates.list_by_campaign_id(self.id)
-        end
+        @campaign_email_templates ||= if self.campaign_email_templates_attributes?
+                                        Naas::Models::CampaignEmailTemplates.new(self.campaign_email_templates)
+                                      else
+                                        Naas::Models::CampaignEmailTemplates.list_by_campaign_id(self.id)
+                                      end
       end
 
       def campaign_email_templates?

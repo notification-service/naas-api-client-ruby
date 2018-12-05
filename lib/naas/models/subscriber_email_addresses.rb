@@ -12,6 +12,28 @@ module Naas
         @collection = Array(collection)
       end
 
+      # Helper method to retrieve from the request
+      #
+      # @return [Naas::Models::SubscriberEmailAddreses]
+      def self.list_by_subscriber_id(subscriber_id, params={})
+        request = Naas::Requests::SubscriberEmailAddresses.list_by_subscriber_id(subscriber_id, params)
+
+        klass_attributes = []
+
+        request.on(:success) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', [])
+
+          klass_attributes = response_data
+        end
+
+        request.on(:failure) do |resp|
+          Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber email addresses: %s" % [resp.status]) }
+        end
+
+        self.new(klass_attributes)
+      end
+
       # Helper method to retrieve from the
       # request
       #

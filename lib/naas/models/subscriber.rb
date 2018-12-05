@@ -54,6 +54,39 @@ module Naas
         !self.email_address.nil? && !self.email_address.empty?
       end
 
+      # Return the associated email addresses attributes
+      #
+      # @return [Array]
+      def subscriber_email_addresses_attributes
+        @attributes.fetch('subscriber_email_addreses', [])
+      end
+
+      # Returns true if there are subscriber email addresses
+      # attributes
+      #
+      # @return [Boolean]
+      def subscriber_email_addresses_attributes?
+        self.subscriber_email_addresses_attributes.any?
+      end
+
+      # Returns the subscriber email addresses
+      #
+      # @return [Naas::Models::SubscriberEmailAddresses]
+      def subscriber_email_addresses
+        @subscriber_email_addresses ||= if self.subscriber_email_addresses_attributes?
+                                          Naas::Models::SubscriberEmailAddresses.new(self.subscriber_email_addresses_attributes)
+                                        else
+                                          Naas::Models::SubscriberEmailAddresses.list_by_subscriber_id(self.id)
+                                        end
+      end
+
+      # Returns true if there are any subscriber email addresses
+      #
+      # @return [Boolean]
+      def subscriber_email_addresses?
+        self.subscriber_email_addresses.any?
+      end
+
       # Returns the created at timestamp
       #
       # @return [DateTime,NilClass]
