@@ -18,6 +18,30 @@ module Naas
 
         Naas::Response.new(request)
       end
+
+      # Update the current account
+      #
+      # @param params [Hash] Attributes for the domain model
+      #
+      # @return [Naas::Response]
+      def self.update(params={})
+        rel   = Naas::Client.rel_for('rels/account')
+        route = Naas::Client.routes.find_by_rel(rel)
+        url   = route.url_for
+
+        request_body = {
+          :account => params
+        }
+
+        request = Naas::Client.connection.put do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+          req.headers['Content-Type'] = 'application/json'
+          req.body = MultiJson.dump(request_body)
+        end
+
+        Naas::Response.new(request)
+      end
     end
   end
 end
