@@ -37,6 +37,55 @@ module Naas
 
         Naas::Response.new(request)
       end
+
+      # Create a new subscriber
+      #
+      # @param params [Hash] Attributes for the domain model
+      #
+      # @return [Naas::Response]
+      def self.create(params={})
+        rel   = Naas::Client.rel_for('rels/subscribers')
+        route = Naas::Client.routes.find_by_rel(rel)
+        url   = route.url_for
+
+        request_body = {
+          :subscriber => params
+        }
+
+        request = Naas::Client.connection.post do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+          req.headers['Content-Type'] = 'application/json'
+          req.body = MultiJson.dump(request_body)
+        end
+
+        Naas::Response.new(request)
+      end
+
+      # Update an existing subscriber
+      #
+      # @param id [Integer]
+      # @param params [Hash] Attributes for the domain model
+      #
+      # @return [Naas::Response]
+      def self.update(id, params={})
+        rel   = Naas::Client.rel_for('rels/subscriber')
+        route = Naas::Client.routes.find_by_rel(rel)
+        url   = route.url_for(id: id)
+
+        request_body = {
+          :subscriber => params
+        }
+
+        request = Naas::Client.connection.put do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+          req.headers['Content-Type'] = 'application/json'
+          req.body = MultiJson.dump(request_body)
+        end
+
+        Naas::Response.new(request)
+      end
     end
   end
 end
