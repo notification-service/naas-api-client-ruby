@@ -9,7 +9,7 @@ module Naas
       def self.list(params={})
         rel   = Naas::Client.rel_for('rels/subscribers')
         route = Naas::Client.routes.find_by_rel(rel)
-        url   = route.url_for
+        url   = route.url_for(params)
 
         request = Naas::Client.connection.get do |req|
           req.url(url)
