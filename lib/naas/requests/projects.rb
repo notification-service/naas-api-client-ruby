@@ -1,16 +1,13 @@
 module Naas
   module Requests
     class Projects
-      COLLECTION_REL = 'rels/projects'.freeze
-      INSTANCE_REL   = 'rels/project'.freeze
-
       # Retrieve the list of projects
       #
       # @param params [Hash]
       #
       # @return [Naas::Response]
       def self.list(params={})
-        rel   = Naas::Client.rel_for(COLLECTION_REL)
+        rel   = Naas::Client.rel_for('rels/projects')
         route = Naas::Client.routes.find_by_rel(rel)
         url   = route.url_for
 
@@ -29,7 +26,7 @@ module Naas
       #
       # @return [Naas::Response]
       def self.retrieve(id, params={})
-        rel   = Naas::Client.rel_for(INSTANCE_REL)
+        rel   = Naas::Client.rel_for('rels/project')
         route = Naas::Client.routes.find_by_rel(rel)
         url   = route.url_for(params.merge!(id: id))
 
@@ -47,7 +44,8 @@ module Naas
       #
       # @return [Naas::Response]
       def self.create(params={})
-        route = Naas::Client.routes.find_by_rel(self.rel)
+        rel   = Naas::Client.rel_for('rels/projects')
+        route = Naas::Client.routes.find_by_rel(rel)
         url   = route.url_for
 
         request_body = {
