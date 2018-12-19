@@ -57,6 +57,36 @@ module Naas
         Naas::Models::EmailNotification.new(klass_attributes)
       end
 
+      # Create a new email notification
+      #
+      # @raises [Naas::InvalidRequestError]
+      #
+      # @return [Naas::Models::EmailNotification]
+      def self.create(params={})
+        request = Naas::Requests::EmailNotifications.create(params)
+
+        request.on(:success) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', {})
+
+          klass_attributes = response_data
+
+          return Naas::Models::EmailNotification.new(klass_attributes)
+        end
+
+        request.on(:failure) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', {})
+
+          error           = Naas::Models::Error.new(response_data)
+          failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
+
+          Naas::Client.configuration.logger.info { failure_message }
+
+          raise Naas::Errors::InvalidRequestError.new(failure_message)
+        end
+      end
+
       def each(&block)
         internal_collection.each(&block)
       end
