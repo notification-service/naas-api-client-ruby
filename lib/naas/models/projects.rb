@@ -57,6 +57,36 @@ module Naas
         Naas::Models::Project.new(klass_attributes)
       end
 
+      # Create a new project
+      #
+      # @raises [Naas::InvalidRequestError]
+      #
+      # @return [Naas::Models::Project]
+      def self.create(params={})
+        request = Naas::Requests::Projects.create(params)
+
+        request.on(:success) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', {})
+
+          klass_attributes = response_data
+
+          return Naas::Models::Project.new(klass_attributes)
+        end
+
+        request.on(:failure) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', {})
+
+          error           = Naas::Models::Error.new(response_data)
+          failure_message = "Failure creating the project: %s" % [error.full_messages.inspect]
+
+          Naas::Client.configuration.logger.info { failure_message }
+
+          raise Naas::Errors::InvalidRequestError.new(failure_message)
+        end
+      end
+
       def each(&block)
         internal_collection.each(&block)
       end
