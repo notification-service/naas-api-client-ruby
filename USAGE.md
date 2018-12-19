@@ -1,6 +1,56 @@
 # Usage
 
-Below are example use cases to send an *Email Notification*.
+This outlines the different ways you can use the API client.
+
+# Approaches
+
+## Request Based
+
+Using this approach gives you flexibility in the extended response body.
+
+```ruby
+project_attributes = {
+  :name        => 'My First Project',
+  :description => 'My project description'
+}
+
+remote_request = Naas::Requests::Projects.create(project_attributes)
+
+remote_request.on(:success) do |resp|
+  # Do something with the successful (2XX) response. You have access to the `data` (models), `links` (hypermedia), and the full `resp` (HTTP)
+end
+
+remote_request.on(:failure) do |resp|
+  # Do something with the failure (4XX) response. You have access to the `data` (models), `links` (hypermedia), and the full `resp` (HTTP)
+end
+
+remote_request.on(:server_error) do |resp|
+  # Do something with the server error (5XX) response. You have access to the `data` (models), `links` (hypermedia), and the full `resp` (HTTP)
+end
+```
+
+## Model Based
+
+Using this approach gives you a boolean response. It's either _successful_ or raises an `Naas:Errors::InvalidRequestError` exception with a stringified error message.
+
+
+```ruby
+project_attributes = {
+  :name        => 'My First Project',
+  :description => 'My project description'
+}
+
+begin
+  project = Naas::Models::Projects.create(project_attributes)
+rescue Naas::Errors::InvalidRequestError => exception
+  logger.fatal { exception.message.inspect }
+end
+```
+
+
+# Example
+
+Below is an example of the steps needed to create an *Email Notification*.
 
 ## Create an SMTP Setting
 
