@@ -69,6 +69,13 @@ module Naas
         @attributes['html_body']
       end
 
+      # Returns true if there is an HTML body
+      #
+      # @return [Boolean]
+      def html_body?
+        !self.html_body.nil? && !self.html_body.blank?
+      end
+
       # Returns the plain text body
       #
       # @return [String]
@@ -76,6 +83,12 @@ module Naas
         @attributes['text_body']
       end
 
+      # Returns true if there is a text body
+      #
+      # @return [Boolean]
+      def text_body?
+        !self.text_body.nil? && !self.text_body.blank?
+      end
 
       # Returns the created at timestamp
       #
