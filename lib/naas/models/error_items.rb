@@ -17,6 +17,13 @@ module Naas
         internal_collection.each(&block)
       end
 
+      # Returns the ful messages as a string
+      #
+      # @return [String]
+      def full_messages
+        self.map(&:full_message).join(', ')
+      end
+
       private
       def internal_collection
         @collection.map { |record| Naas::Models::ErrorItem.new(record) }

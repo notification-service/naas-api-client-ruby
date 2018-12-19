@@ -33,6 +33,13 @@ module Naas
       def message
         @attributes['message']
       end
+
+      # Returns the fully formatted message
+      #
+      # @return [String]
+      def full_message
+        self.message
+      end
     end
   end
 end

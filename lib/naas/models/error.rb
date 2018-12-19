@@ -38,6 +38,13 @@ module Naas
         Naas::Models::ErrorItems.new(self.errors_attributes)
       end
 
+      # Delegate to the error for full messages
+      #
+      # @return [String]
+      def full_messages
+        self.errors.full_messages
+      end
+
       # Returns true if there are any errors
       #
       # @return [Boolean]
