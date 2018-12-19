@@ -79,7 +79,7 @@ module Naas
           response_data = response_body.fetch('data', {})
 
           error           = Naas::Models::Error.new(response_data)
-          failure_message = "Failure creating the project: %s" % [error.full_messages.inspect]
+          failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
 
           Naas::Client.configuration.logger.info { failure_message }
 
