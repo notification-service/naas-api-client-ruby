@@ -64,7 +64,7 @@ module Naas
         @campaign_email_templates ||= if self.campaign_email_templates_attributes?
                                         Naas::Models::CampaignEmailTemplates.new(self.campaign_email_templates)
                                       else
-                                        Naas::Models::CampaignEmailTemplates.list_by_campaign_id(self.id)
+                                        Naas::Models::CampaignEmailTemplates.list_by_project_id_and_campaign_id(self.project_id, self.id)
                                       end
       end
 
