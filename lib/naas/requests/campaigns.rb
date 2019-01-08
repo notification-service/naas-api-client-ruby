@@ -75,7 +75,7 @@ module Naas
       def self.update_by_project_id(project_id, id, params={})
         rel   = Naas::Client.rel_for('rels/project-campaign')
         route = Naas::Client.routes.find_by_rel(rel)
-        url   = route.url_for(params.merge!(project_id: project_id, id: id))
+        url   = route.url_for(project_id: project_id, id: id)
 
         request_body = {
           :campaign => params
