@@ -50,7 +50,7 @@ module Naas
       def self.create_by_project_id(project_id, params={})
         rel   = Naas::Client.rel_for('rels/project-campaigns')
         route = Naas::Client.routes.find_by_rel(rel)
-        url   = route.url_for(params.merge!(project_id: project_id))
+        url   = route.url_for(project_id: project_id)
 
         request_body = {
           :campaign => params
