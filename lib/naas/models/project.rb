@@ -74,6 +74,13 @@ module Naas
         @attributes['description']
       end
 
+      # Returns the counter cache for campaigns
+      #
+      # @return [Integer]
+      def campaigns_count
+        @attributes.fetch('campaigns_count', 0).to_i
+      end
+
       # Returns the created at timestamp
       #
       # @return [DateTime,NilClass]
