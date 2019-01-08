@@ -16,81 +16,6 @@ module Naas
       # request
       #
       # @return [Naas::Models::Campaigns]
-      def self.list(params={})
-        request = Naas::Requests::Campaigns.list(params)
-
-        klass_attributes = []
-
-        request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', [])
-
-          klass_attributes = response_data
-        end
-
-        request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the campaigns: %s" % [resp.status]) }
-        end
-
-        self.new(klass_attributes)
-      end
-
-      # Helper method to retrieve from the request
-      #
-      # @return [Naas::Models::Campaign]
-      def self.retrieve(id, params={})
-        request = Naas::Requests::Campaigns.retrieve(id, params)
-
-        klass_attributes = {}
-
-        request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
-        end
-
-        request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the campaign: %s" % [resp.status]) }
-        end
-
-        Naas::Models::Campaign.new(klass_attributes)
-      end
-
-      # Create a new campaign
-      #
-      # @raises [Naas::InvalidRequestError]
-      #
-      # @return [Naas::Models::Campaign]
-      def self.create(params={})
-        request = Naas::Requests::Campaigns.create(params)
-
-        request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
-
-          return Naas::Models::Campaign.new(klass_attributes)
-        end
-
-        request.on(:failure) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          error           = Naas::Models::Error.new(response_data)
-          failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
-
-          Naas::Client.configuration.logger.info { failure_message }
-
-          raise Naas::Errors::InvalidRequestError.new(failure_message)
-        end
-      end
-
-      # Helper method to retrieve from the
-      # request
-      #
-      # @return [Naas::Models::Campaigns]
       def self.list_by_project_id(project_id, params={})
         request = Naas::Requests::Campaigns.list_by_project_id(project_id, params)
 
@@ -155,6 +80,40 @@ module Naas
 
           error           = Naas::Models::Error.new(response_data)
           failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
+
+          Naas::Client.configuration.logger.info { failure_message }
+
+          raise Naas::Errors::InvalidRequestError.new(failure_message)
+        end
+      end
+
+      # Update an existing campaign
+      #
+      # @param project_id [String]
+      # @param id [String]
+      # @param params [Hash]
+      #
+      # @raises [Naas::InvalidRequestError]
+      #
+      # @return [Naas::Models::Campaign]
+      def self.update_by_project_id(project_id, id, params={})
+        request = Naas::Requests::Campaigns.update_by_project_id(project_id, id, params)
+
+        request.on(:success) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', {})
+
+          klass_attributes = response_data
+
+          return Naas::Models::Campaign.new(klass_attributes)
+        end
+
+        request.on(:failure) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', {})
+
+          error           = Naas::Models::Error.new(response_data)
+          failure_message = "Failure updating the record: %s" % [error.full_messages.inspect]
 
           Naas::Client.configuration.logger.info { failure_message }
 
