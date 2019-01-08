@@ -57,6 +57,26 @@ module Naas
         Naas::Models::Project.new(klass_attributes)
       end
 
+      # Retrieve the model from the request
+      #
+      # @raises [Naas::Errors::RecordNotFoundError]
+      #
+      # @return [Naas::Models::Project]
+      def self.retrieve!(id, params={})
+        request = Naas::Requests::Projects.retrieve(id, params)
+
+        request.on(:success) do |resp|
+          response_body = resp.body
+          response_data = response_body.fetch('data', {})
+
+          return Naas::Models::Project.new(response_data)
+        end
+
+        request.on(404) do
+          raise Naas::Errors::RecordNotFoundError.new("Could not find record with id: %s" % [id])
+        end
+      end
+
       # Create a new project
       #
       # @raises [Naas::InvalidRequestError]
