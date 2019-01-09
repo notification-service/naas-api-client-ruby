@@ -1,8 +1,18 @@
 module Naas
   module Models
     class EmailNotificationBasic
-      def self.create(email_address, campaign_email_template_id, content={}, options={})
-        request = Naas::Requests::EmailNotificationBasics.create_from_attributes(email_address, campaign_email_template_id, content, options)
+      # Helper method to create from the request
+      #
+      # @param email_address [String]
+      # @param project_id [String]
+      # @param campaign_id [String]
+      # @param campaign_email_template_id [String]
+      # @param content [Hash]
+      # @param options [Hash]
+      #
+      # @return [Naas::Models::EmailNotification]
+      def self.create(email_address, project_id, campaign_id, campaign_email_template_id, content={}, options={})
+        request = Naas::Requests::EmailNotificationBasics.create_from_attributes(email_address, project_id, campaign_id, campaign_email_template_id, content, options)
 
         klass_attributes = {}
 
