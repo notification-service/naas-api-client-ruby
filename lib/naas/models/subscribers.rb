@@ -15,6 +15,8 @@ module Naas
       # Helper method to retrieve from the
       # request
       #
+      # @param params [Hash]
+      #
       # @return [Naas::Models::Subscribers]
       def self.list(params={})
         request = Naas::Requests::Subscribers.list(params)
@@ -22,10 +24,7 @@ module Naas
         klass_attributes = []
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', [])
-
-          klass_attributes = response_data
+          klass_attributes = resp.data_attributes
         end
 
         request.on(:failure) do |resp|
@@ -37,6 +36,9 @@ module Naas
 
       # Helper method to retrieve from the request
       #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
       # @return [Naas::Models::Subscriber]
       def self.retrieve(id, params={})
         request = Naas::Requests::Subscribers.retrieve(id, params)
@@ -44,10 +46,7 @@ module Naas
         klass_attributes = {}
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
+          klass_attributes = resp.data_attributes
         end
 
         request.on(:failure) do |resp|
@@ -57,7 +56,29 @@ module Naas
         Naas::Models::Subscriber.new(klass_attributes)
       end
 
+      # Helper method to retrieve from the request
+      #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
+      # @raises [Naas::Errors::RecordNotFoundError]
+      #
+      # @return [Naas::Models::Subscriber]
+      def self.retrieve!(id, params={})
+        request = Naas::Requests::Subscribers.retrieve(id, params)
+
+        request.on(:success) do |resp|
+          return Naas::Models::Subscriber.new(resp.data_attributes)
+        end
+
+        request.on(404) do
+          raise Naas::Errors::RecordNotFoundError.new("Could not find record with id: %s" % [id])
+        end
+      end
+
       # Create a new subscriber
+      #
+      # @param params [Hash]
       #
       # @raises [Naas::InvalidRequestError]
       #
@@ -66,19 +87,11 @@ module Naas
         request = Naas::Requests::Subscribers.create(params)
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
-
-          return Naas::Models::Subscriber.new(klass_attributes)
+          return Naas::Models::Subscriber.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          error           = Naas::Models::Error.new(response_data)
+          error           = Naas::Models::Error.new(resp.data_attributes)
           failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
 
           Naas::Client.configuration.logger.info { failure_message }

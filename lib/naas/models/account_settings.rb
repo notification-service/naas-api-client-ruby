@@ -7,15 +7,8 @@ module Naas
       def self.retrieve
         request = Naas::Requests::AccountSettings.retrieve
 
-        klass_attributes = {}
-
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
-
-          return Naas::Models::AccountSetting.new(klass_attributes)
+          return Naas::Models::AccountSetting.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
