@@ -56,6 +56,26 @@ module Naas
         Naas::Models::EmailNotification.new(klass_attributes)
       end
 
+      # Helper method to retrieve from the request
+      #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
+      # @raises [Naas::Errors::RecordNotFoundError]
+      #
+      # @return [Naas::Models::EmailNotification]
+      def self.retrieve!(id, params={})
+        request = Naas::Requests::EmailNotifications.retrieve(id, params)
+
+        request.on(:success) do |resp|
+          return Naas::Models::EmailNotification.new(resp.data_attributes)
+        end
+
+        request.on(404) do
+          raise Naas::Errors::RecordNotFoundError.new("Could not find record with id: %s" % [id])
+        end
+      end
+
       # Create a new email notification
       #
       # @param params [Hash]
