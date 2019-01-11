@@ -136,6 +136,24 @@ subscriber_email_address_attributes = {
 subscriber_email_address = Naas::Models::SubscriberEmailAddresses.create(subscriber_email_address_attributes)
 ```
 
+## Retrieve a Subscriber by Email Address
+You can retrieve a subscriber email address via a few ways:
+
+### Via the `id`
+```ruby
+subscriber_email_address = Naas::Models::SubscriberEmailAddresses.retrieve(12)
+=> #<Naas::Models::SubscriberEmailAddress:0x00007fb10e087db8>
+```
+
+### Via the MD5 hash of the email address
+```ruby
+email_address      = 'billy@larkin.com'
+email_address_hash = Digest::MD5.hexdigest(email_address)
+
+subscriber_email_address = Naas::Models::SubscriberEmailAddresses.retrieve(email_address_hash)
+=> #<Naas::Models::SubscriberEmailAddress:0x00007fb10d3369e8>
+```
+
 ## Create an Email Notification
 
 ```ruby
@@ -148,3 +166,37 @@ email_notification_attributes = {
 
 email_notification = Naas::Models::EmailNotifications.create(email_notification_attributes)
 ```
+
+## Create a Basic Email Notification
+This is a helper method to create the notifications based on the _attributes_ alone.
+
+```ruby
+email_notification = Naas::Models::EmailNotificationBasic.create('billy@larkin.com', 'my-first-project', 'transaction-emails', 'welcome-email', { user: { full_name: 'Billy Larkin' } }, account_smtp_setting_id: 'gmail-domain-account')
+```
+
+> The arguments are: `email_address`, `project_id`, `campaign_id`, `campaign_email_template_id`, `content`, `options`. The `options` are optional, and if included the `content` must be wrapped with the brackets `{}`.
+
+## Email Notification Delivery
+You can then deliver an email notification via a few ways:
+
+> You can call `deliver` multiple times. It will create a _copy_ of the original message and then link you to the new status. All Email Notifications will execute deliver until it receives a successful response. Once successful it will create a new message thread to capture all activity.
+
+### Via the instance
+
+```ruby
+email_notification.deliver
+```
+This will return a `201 Created` with a `Location` header response to view the **status**.
+
+### Via the Request
+
+```ruby
+Naas::Requests::EmailNotifications.deliver(email_notification.id)
+```
+
+### Via the Model
+
+```ruby
+Naas::Models::EmailNotifications.deliver(email_notification.id)
+```
+
