@@ -10,6 +10,7 @@ Using this approach gives you flexibility in the extended response body.
 
 ```ruby
 project_attributes = {
+  :id          => 'my-first-project',
   :name        => 'My First Project',
   :description => 'My project description'
 }
@@ -36,6 +37,7 @@ Using this approach gives you a boolean response. It's either _successful_ or ra
 
 ```ruby
 project_attributes = {
+  :id          => 'my-first-project',
   :name        => 'My First Project',
   :description => 'My project description'
 }
@@ -56,6 +58,7 @@ Below is an example of the steps needed to create an *Email Notification*.
 
 ```ruby
 account_smtp_setting_attributes = {
+  :id                        => 'gmail-domain-account',
   :name                      => 'Gmail',
   :description               => 'Gmail domain account',
   :address                   => 'smtp.gmail.com',
@@ -74,6 +77,7 @@ account_smtp_setting = Naas::Models::AccountSmtpSettings.create(account_smtp_set
 
 ```ruby
 project_attributes = {
+  :id          => 'my-first-project',
   :name        => 'My First Project',
   :description => 'My project description'
 }
@@ -85,18 +89,19 @@ project = Naas::Models::Projects.create(project_attributes)
 
 ```ruby
 campaign_attributes = {
-  :project_id  => project.id,
+  :id          => 'transaction-emails',
   :name        => 'Transaction Emails',
   :description => 'All transaction emails in the system'
 }
 
-campaign = Naas::Models::Campaigns.create(campaign_attributes)
+campaign = Naas::Models::Campaigns.create_by_project_id(project.id, campaign_attributes)
 ```
 
 ## Create a Campaign Email Template
 
 ```ruby
 campaign_email_template_attributes = {
+  :id                 => 'welcome-email',
   :name               => 'Welcome Email',
   :subject            => 'Welcome to Application',
   :from_email_address => 'info@application.com',
@@ -105,7 +110,7 @@ campaign_email_template_attributes = {
   :html_body          => '<h1>Welcome {{user.full_name }} to Application!</h1>'
 }
 
-campaign_email_template = Naas::Models::CampaignEmailTemplates.create_by_campaign_id(campaign.id, campaign_email_template_attributes)
+campaign_email_template = Naas::Models::CampaignEmailTemplates.create_by_project_id_and_campaign_id(project.id, campaign.id, campaign_email_template_attributes)
 ```
 
 ## Create a Subscriber
@@ -124,7 +129,8 @@ subscriber = Naas::Models::Subscribers.create(subscriber_attributes)
 ```ruby
 subscriber_email_address_attributes = {
   :subscriber_id => subscriber.id,
-  :email_address => 'billy@larkin.com'
+  :email_address => 'billy@larkin.com',
+  :is_primary    => true
 }
 
 subscriber_email_address = Naas::Models::SubscriberEmailAddresses.create(subscriber_email_address_attributes)
@@ -135,7 +141,7 @@ subscriber_email_address = Naas::Models::SubscriberEmailAddresses.create(subscri
 ```ruby
 email_notification_attributes = {
   :campaign_email_template_id  => campaign_email_template.id,
-  :account_smtp_setting        => account_smtp_setting.id,
+  :account_smtp_setting_id     => account_smtp_setting.id,
   :subscriber_email_address_id => subscriber_email_address.id,
   :content                     => { user: { full_name: "Billy Larkin" } }
 }
