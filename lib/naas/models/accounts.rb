@@ -18,20 +18,15 @@ module Naas
       def self.retrieve(params={})
         request = Naas::Requests::Accounts.retrieve(params)
 
-        klass_attributes = {}
-
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
+          return Naas::Models::Account.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the account: %s" % [resp.status]) }
-        end
+          Naas::Client.configuration.logger.error { ("Failure retrieving the account: %s" % [resp.status]) }
 
-        Naas::Models::Account.new(klass_attributes)
+          return nil
+        end
       end
 
       def each(&block)

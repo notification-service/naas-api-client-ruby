@@ -12,7 +12,7 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber email address: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the account settings: %s" % [resp.status]) }
 
           return nil
         end

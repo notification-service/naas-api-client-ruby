@@ -50,7 +50,7 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the email notifications: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the email notifications: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -65,17 +65,15 @@ module Naas
       def self.retrieve(id, params={})
         request = Naas::Requests::EmailNotifications.retrieve(id, params)
 
-        klass_attributes = {}
-
         request.on(:success) do |resp|
-          klass_attributes = resp.data_attributes
+          return Naas::Models::EmailNotification.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the email notification: %s" % [resp.status]) }
-        end
+          Naas::Client.configuration.logger.error { ("Failure retrieving the email notification: %s" % [resp.status]) }
 
-        Naas::Models::EmailNotification.new(klass_attributes)
+          return nil
+        end
       end
 
       # Helper method to retrieve from the request
@@ -116,7 +114,7 @@ module Naas
           error           = Naas::Models::Error.new(resp.data_attributes)
           failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
 
-          Naas::Client.configuration.logger.info { failure_message }
+          Naas::Client.configuration.logger.error { failure_message }
 
           raise Naas::Errors::InvalidRequestError.new(failure_message)
         end

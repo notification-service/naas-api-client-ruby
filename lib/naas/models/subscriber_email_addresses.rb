@@ -28,7 +28,7 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber email addresses: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the subscriber email addresses: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -50,7 +50,7 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber email addresses: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the subscriber email addresses: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -71,13 +71,10 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          error           = Naas::Models::Error.new(response_data)
+          error           = Naas::Models::Error.new(resp.data_attributes)
           failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
 
-          Naas::Client.configuration.logger.info { failure_message }
+          Naas::Client.configuration.logger.error { failure_message }
 
           raise Naas::Errors::InvalidRequestError.new(failure_message)
         end
@@ -97,7 +94,7 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber email address: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the subscriber email address: %s" % [resp.status]) }
 
           return nil
         end

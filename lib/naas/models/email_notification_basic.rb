@@ -14,17 +14,13 @@ module Naas
       def self.create(email_address, project_id, campaign_id, campaign_email_template_id, content={}, options={})
         request = Naas::Requests::EmailNotificationBasics.create_from_attributes(email_address, project_id, campaign_id, campaign_email_template_id, content, options)
 
-        klass_attributes = {}
-
         request.on(:success) do |resp|
-          klass_attributes = resp.data_attributes
+          return Naas::Models::EmailNotification.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the email notification: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the email notification: %s" % [resp.status]) }
         end
-
-        Naas::Models::EmailNotification.new(klass_attributes)
       end
     end
   end
