@@ -12,6 +12,28 @@ module Naas
         @collection = Array(collection)
       end
 
+
+      # deliver the email notification
+      #
+      # @note: The response from this is a redirect to then retrieve the
+      # status. It is not immediately available in the response.
+      #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
+      # @return [Naas::Response]
+      def self.deliver(id, params={})
+        request = Naas::Requests::EmailNotifications.deliver(id, params)
+
+        request.on(:success) do |resp|
+          Naas::Client.configuration.logger.info { ("Delivered email notification: %s" % [resp.status]) }
+        end
+
+        request.on(:failure) do |resp|
+          Naas::Client.configuration.logger.error { ("Failure delivering the email notification: %s" % [resp.status]) }
+        end
+      end
+
       # Helper method to retrieve from the
       # request
       #
