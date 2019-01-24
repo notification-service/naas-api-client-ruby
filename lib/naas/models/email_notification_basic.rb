@@ -20,6 +20,8 @@ module Naas
 
         request.on(:failure) do |resp|
           Naas::Client.configuration.logger.error { ("Failure retrieving the email notification: %s" % [resp.status]) }
+
+          return nil
         end
       end
     end
