@@ -11,7 +11,7 @@ module Naas
       # @param options [Hash]
       #
       # @return [Naas::Models::EmailNotification]
-      def self.create(email_address, project_id, campaign_id, campaign_email_template_id, content={}, options={})
+      def self.create(email_address:, project_id:, campaign_id:, campaign_email_template_id:, content: {}, options: {})
         request = Naas::Requests::EmailNotificationBasics.create_from_attributes(email_address, project_id, campaign_id, campaign_email_template_id, content, options)
 
         request.on(:success) do |resp|
