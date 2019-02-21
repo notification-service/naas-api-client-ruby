@@ -15,6 +15,8 @@ module Naas
       # Helper method to retrieve from the
       # request
       #
+      # @param params [Hash]
+      #
       # @return [Naas::Models::Projects]
       def self.list(params={})
         request = Naas::Requests::Projects.list(params)
@@ -22,14 +24,11 @@ module Naas
         klass_attributes = []
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', [])
-
-          klass_attributes = response_data
+          klass_attributes = resp.data_attributes
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the projects: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the projects: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -37,27 +36,28 @@ module Naas
 
       # Helper method to retrieve from the request
       #
+      # @param id [String]
+      # @param params [Hash]
+      #
       # @return [Naas::Models::Project]
       def self.retrieve(id, params={})
         request = Naas::Requests::Projects.retrieve(id, params)
 
-        klass_attributes = {}
-
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
+          return Naas::Models::Project.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the project: %s" % [resp.status]) }
-        end
+          Naas::Client.configuration.logger.error { ("Failure retrieving the project: %s" % [resp.status]) }
 
-        Naas::Models::Project.new(klass_attributes)
+          return nil
+        end
       end
 
       # Retrieve the model from the request
+      #
+      # @param id [String]
+      # @param params [Hash]
       #
       # @raises [Naas::Errors::RecordNotFoundError]
       #
@@ -66,10 +66,7 @@ module Naas
         request = Naas::Requests::Projects.retrieve(id, params)
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          return Naas::Models::Project.new(response_data)
+          return Naas::Models::Project.new(resp.data_attributes)
         end
 
         request.on(404) do
@@ -79,6 +76,8 @@ module Naas
 
       # Create a new project
       #
+      # @param params [Hash]
+      #
       # @raises [Naas::InvalidRequestError]
       #
       # @return [Naas::Models::Project]
@@ -86,22 +85,14 @@ module Naas
         request = Naas::Requests::Projects.create(params)
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
-
-          return Naas::Models::Project.new(klass_attributes)
+          return Naas::Models::Project.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          error           = Naas::Models::Error.new(response_data)
+          error           = Naas::Models::Error.new(resp.data_attributes)
           failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
 
-          Naas::Client.configuration.logger.info { failure_message }
+          Naas::Client.configuration.logger.error { failure_message }
 
           raise Naas::Errors::InvalidRequestError.new(failure_message)
         end

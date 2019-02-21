@@ -10,6 +10,7 @@ Using this approach gives you flexibility in the extended response body.
 
 ```ruby
 project_attributes = {
+  :id          => 'my-first-project',
   :name        => 'My First Project',
   :description => 'My project description'
 }
@@ -36,6 +37,7 @@ Using this approach gives you a boolean response. It's either _successful_ or ra
 
 ```ruby
 project_attributes = {
+  :id          => 'my-first-project',
   :name        => 'My First Project',
   :description => 'My project description'
 }
@@ -56,6 +58,7 @@ Below is an example of the steps needed to create an *Email Notification*.
 
 ```ruby
 account_smtp_setting_attributes = {
+  :id                        => 'gmail-domain-account',
   :name                      => 'Gmail',
   :description               => 'Gmail domain account',
   :address                   => 'smtp.gmail.com',
@@ -74,6 +77,7 @@ account_smtp_setting = Naas::Models::AccountSmtpSettings.create(account_smtp_set
 
 ```ruby
 project_attributes = {
+  :id          => 'my-first-project',
   :name        => 'My First Project',
   :description => 'My project description'
 }
@@ -85,18 +89,19 @@ project = Naas::Models::Projects.create(project_attributes)
 
 ```ruby
 campaign_attributes = {
-  :project_id  => project.id,
+  :id          => 'transaction-emails',
   :name        => 'Transaction Emails',
   :description => 'All transaction emails in the system'
 }
 
-campaign = Naas::Models::Campaigns.create(campaign_attributes)
+campaign = Naas::Models::Campaigns.create_by_project_id(project.id, campaign_attributes)
 ```
 
 ## Create a Campaign Email Template
 
 ```ruby
 campaign_email_template_attributes = {
+  :id                 => 'welcome-email',
   :name               => 'Welcome Email',
   :subject            => 'Welcome to Application',
   :from_email_address => 'info@application.com',
@@ -105,7 +110,7 @@ campaign_email_template_attributes = {
   :html_body          => '<h1>Welcome {{user.full_name }} to Application!</h1>'
 }
 
-campaign_email_template = Naas::Models::CampaignEmailTemplates.create_by_campaign_id(campaign.id, campaign_email_template_attributes)
+campaign_email_template = Naas::Models::CampaignEmailTemplates.create_by_project_id_and_campaign_id(project.id, campaign.id, campaign_email_template_attributes)
 ```
 
 ## Create a Subscriber
@@ -124,10 +129,29 @@ subscriber = Naas::Models::Subscribers.create(subscriber_attributes)
 ```ruby
 subscriber_email_address_attributes = {
   :subscriber_id => subscriber.id,
-  :email_address => 'billy@larkin.com'
+  :email_address => 'billy@larkin.com',
+  :is_primary    => true
 }
 
 subscriber_email_address = Naas::Models::SubscriberEmailAddresses.create(subscriber_email_address_attributes)
+```
+
+## Retrieve a Subscriber by Email Address
+You can retrieve a subscriber email address via a few ways:
+
+### Via the `id`
+```ruby
+subscriber_email_address = Naas::Models::SubscriberEmailAddresses.retrieve(12)
+=> #<Naas::Models::SubscriberEmailAddress:0x00007fb10e087db8>
+```
+
+### Via the MD5 hash of the email address
+```ruby
+email_address      = 'billy@larkin.com'
+email_address_hash = Digest::MD5.hexdigest(email_address)
+
+subscriber_email_address = Naas::Models::SubscriberEmailAddresses.retrieve(email_address_hash)
+=> #<Naas::Models::SubscriberEmailAddress:0x00007fb10d3369e8>
 ```
 
 ## Create an Email Notification
@@ -135,10 +159,44 @@ subscriber_email_address = Naas::Models::SubscriberEmailAddresses.create(subscri
 ```ruby
 email_notification_attributes = {
   :campaign_email_template_id  => campaign_email_template.id,
-  :account_smtp_setting        => account_smtp_setting.id,
+  :account_smtp_setting_id     => account_smtp_setting.id,
   :subscriber_email_address_id => subscriber_email_address.id,
   :content                     => { user: { full_name: "Billy Larkin" } }
 }
 
 email_notification = Naas::Models::EmailNotifications.create(email_notification_attributes)
 ```
+
+## Create a Basic Email Notification
+This is a helper method to create the notifications based on the _attributes_ alone.
+
+```ruby
+email_notification = Naas::Models::EmailNotificationBasic.create('billy@larkin.com', 'my-first-project', 'transaction-emails', 'welcome-email', { user: { full_name: 'Billy Larkin' } }, account_smtp_setting_id: 'gmail-domain-account')
+```
+
+> The arguments are: `email_address`, `project_id`, `campaign_id`, `campaign_email_template_id`, `content`, `options`. The `options` are optional, and if included the `content` must be wrapped with the brackets `{}`.
+
+## Email Notification Delivery
+You can then deliver an email notification via a few ways:
+
+> You can call `deliver` multiple times. It will create a _copy_ of the original message and then link you to the new status. All Email Notifications will execute deliver until it receives a successful response. Once successful it will create a new message thread to capture all activity.
+
+### Via the instance
+
+```ruby
+email_notification.deliver
+```
+This will return a `201 Created` with a `Location` header response to view the **status**.
+
+### Via the Request
+
+```ruby
+Naas::Requests::EmailNotifications.deliver(email_notification.id)
+```
+
+### Via the Model
+
+```ruby
+Naas::Models::EmailNotifications.deliver(email_notification.id)
+```
+

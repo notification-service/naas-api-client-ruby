@@ -25,14 +25,11 @@ module Naas
         klass_attributes = []
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', [])
-
-          klass_attributes = response_data
+          klass_attributes = resp.data_attributes
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the email notification deliveries: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the email notification deliveries: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -48,20 +45,15 @@ module Naas
       def self.retrieve_by_email_notification_id(email_notification_id, id, params={})
         request = Naas::Requests::EmailNotificationDeliveries.retrieve_by_email_notification_id(email_notification_id, id, params)
 
-        klass_attributes = {}
-
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
+          return Naas::Models::EmailNotificationDelivery.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the email notification delivery: %s" % [resp.status]) }
-        end
+          Naas::Client.configuration.logger.error { ("Failure retrieving the email notification delivery: %s" % [resp.status]) }
 
-        Naas::Models::EmailNotificationDelivery.new(klass_attributes)
+          return nil
+        end
       end
 
       def each(&block)

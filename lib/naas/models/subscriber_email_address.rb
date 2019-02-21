@@ -47,8 +47,36 @@ module Naas
       def is_primary
         @attributes.fetch('is_primary', false)
       end
-      alias :is_primary? :is_primary
-      alias :primary? :is_primary
+      alias is_primary? is_primary
+      alias primary? is_primary
+
+      # Returns the confirmation code for the
+      # record
+      #
+      # @return [String]
+      def confirmation_code
+        @attributes['confirmation_code']
+      end
+
+      # Returns true if this record is confirmed
+      #
+      # @return [Boolean]
+      def is_confirmed
+        @attributes.fetch('is_confirmed', false)
+      end
+      alias is_confirmed? is_confirmed
+      alias confirmed? is_confirmed
+
+      # Returns the confirmed at timestamp
+      #
+      # @return [DateTime,NilClass]
+      def confirmed_at
+        begin
+          DateTime.parse(@attributes['confirmed_at'])
+        rescue
+          nil
+        end
+      end
 
       # Returns the created at timestamp
       #

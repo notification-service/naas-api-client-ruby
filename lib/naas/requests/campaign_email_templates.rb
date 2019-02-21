@@ -3,14 +3,15 @@ module Naas
     class CampaignEmailTemplates
       # Retrieve the list of a campaign email template by campaign
       #
-      # @param campaign_id [Integer]
+      # @param project_id [String]
+      # @param campaign_id [String]
       # @param params [Hash]
       #
       # @return [Naas::Response]
-      def self.list_by_campaign_id(campaign_id, params={})
-        rel   = Naas::Client.rel_for('rels/campaign-campaign-email-templates')
+      def self.list_by_project_id_and_campaign_id(project_id, campaign_id, params={})
+        rel   = Naas::Client.rel_for('rels/project-campaign-campaign-email-templates')
         route = Naas::Client.routes.find_by_rel(rel)
-        url   = route.url_for(params.merge!(campaign_id: campaign_id))
+        url   = route.url_for(params.merge!(project_id: project_id, campaign_id: campaign_id))
 
         request = Naas::Client.connection.get do |req|
           req.url(url)
@@ -22,15 +23,16 @@ module Naas
 
       # Retrieve the instance of a campaign email template by campaign
       #
-      # @param campaign_id [Integer]
+      # @param project_id [String]
+      # @param campaign_id [String]
       # @param id [Integer]
       # @param params [Hash]
       #
       # @return [Naas::Response]
-      def self.retrieve_by_campaign_id(campaign_id, id, params={})
-        rel   = Naas::Client.rel_for('rels/campaign-campaign-email-template')
+      def self.retrieve_by_project_id_and_campaign_id(project_id, campaign_id, id, params={})
+        rel   = Naas::Client.rel_for('rels/project-campaign-campaign-email-template')
         route = Naas::Client.routes.find_by_rel(rel)
-        url   = route.url_for(params.merge!(campaign_id: campaign_id, id: id))
+        url   = route.url_for(params.merge!(project_id: project_id, campaign_id: campaign_id, id: id))
 
         request = Naas::Client.connection.get do |req|
           req.url(url)
@@ -42,14 +44,16 @@ module Naas
 
       # Create a new record
       #
-      # @param id [Integer]
+      # @param project_id [String]
+      # @param campaign_id [String]
+      # @param id [String]
       # @param params [Hash]
       #
       # @return [Naas::Response]
-      def self.create_by_campaign_id(campaign_id, params={})
-        rel   = Naas::Client.rel_for('rels/campaign-campaign-email-templates')
+      def self.create_by_project_id_and_campaign_id(project_id, campaign_id, params={})
+        rel   = Naas::Client.rel_for('rels/project-campaign-campaign-email-templates')
         route = Naas::Client.routes.find_by_rel(rel)
-        url   = route.url_for(params.merge!(campaign_id: campaign_id))
+        url   = route.url_for(params.merge!(project_id: project_id, campaign_id: campaign_id))
 
         request_body = {
           :campaign_email_template => params

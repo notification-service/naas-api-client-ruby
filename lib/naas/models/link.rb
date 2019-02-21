@@ -12,11 +12,11 @@ module Naas
         @attributes = attributes
       end
 
-      # Returns the name
+      # Returns the title
       #
       # @return [String]
-      def name
-        @attributes['name']
+      def title
+        @attributes['title']
       end
 
       # Returns the href

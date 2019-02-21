@@ -12,8 +12,32 @@ module Naas
         @collection = Array(collection)
       end
 
+
+      # deliver the email notification
+      #
+      # @note: The response from this is a redirect to then retrieve the
+      # status. It is not immediately available in the response.
+      #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
+      # @return [Naas::Response]
+      def self.deliver(id, params={})
+        request = Naas::Requests::EmailNotifications.deliver(id, params)
+
+        request.on(:success) do |resp|
+          Naas::Client.configuration.logger.info { ("Delivered email notification: %s" % [resp.status]) }
+        end
+
+        request.on(:failure) do |resp|
+          Naas::Client.configuration.logger.error { ("Failure delivering the email notification: %s" % [resp.status]) }
+        end
+      end
+
       # Helper method to retrieve from the
       # request
+      #
+      # @param params [Hash]
       #
       # @return [Naas::Models::EmailNotifications]
       def self.list(params={})
@@ -22,14 +46,11 @@ module Naas
         klass_attributes = []
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', [])
-
-          klass_attributes = response_data
+          klass_attributes = resp.data_attributes
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the email notifications: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the email notifications: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -37,27 +58,47 @@ module Naas
 
       # Helper method to retrieve from the request
       #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
       # @return [Naas::Models::EmailNotification]
       def self.retrieve(id, params={})
         request = Naas::Requests::EmailNotifications.retrieve(id, params)
 
-        klass_attributes = {}
-
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
+          return Naas::Models::EmailNotification.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the email notification: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the email notification: %s" % [resp.status]) }
+
+          return nil
+        end
+      end
+
+      # Helper method to retrieve from the request
+      #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
+      # @raises [Naas::Errors::RecordNotFoundError]
+      #
+      # @return [Naas::Models::EmailNotification]
+      def self.retrieve!(id, params={})
+        request = Naas::Requests::EmailNotifications.retrieve(id, params)
+
+        request.on(:success) do |resp|
+          return Naas::Models::EmailNotification.new(resp.data_attributes)
         end
 
-        Naas::Models::EmailNotification.new(klass_attributes)
+        request.on(404) do
+          raise Naas::Errors::RecordNotFoundError.new("Could not find record with id: %s" % [id])
+        end
       end
 
       # Create a new email notification
+      #
+      # @param params [Hash]
       #
       # @raises [Naas::InvalidRequestError]
       #
@@ -66,22 +107,14 @@ module Naas
         request = Naas::Requests::EmailNotifications.create(params)
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
-
-          return Naas::Models::EmailNotification.new(klass_attributes)
+          return Naas::Models::EmailNotification.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          error           = Naas::Models::Error.new(response_data)
+          error           = Naas::Models::Error.new(resp.data_attributes)
           failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
 
-          Naas::Client.configuration.logger.info { failure_message }
+          Naas::Client.configuration.logger.error { failure_message }
 
           raise Naas::Errors::InvalidRequestError.new(failure_message)
         end

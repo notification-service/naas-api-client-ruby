@@ -14,6 +14,9 @@ module Naas
 
       # Helper method to retrieve from the request
       #
+      # @param subscriber_id [Integer]
+      # @param params [Hash]
+      #
       # @return [Naas::Models::SubscriberEmailAddreses]
       def self.list_by_subscriber_id(subscriber_id, params={})
         request = Naas::Requests::SubscriberEmailAddresses.list_by_subscriber_id(subscriber_id, params)
@@ -21,14 +24,11 @@ module Naas
         klass_attributes = []
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', [])
-
-          klass_attributes = response_data
+          klass_attributes = resp.data_attributes
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber email addresses: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the subscriber email addresses: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -37,6 +37,8 @@ module Naas
       # Helper method to retrieve from the
       # request
       #
+      # @param params [Hash]
+      #
       # @return [Naas::Models::SubscriberEmailAddresses]
       def self.list(params={})
         request = Naas::Requests::SubscriberEmailAddresses.list(params)
@@ -44,20 +46,19 @@ module Naas
         klass_attributes = []
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', [])
-
-          klass_attributes = response_data
+          klass_attributes = resp.data_attributes
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber email addresses: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the subscriber email addresses: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
       end
 
       # Create a new subscriber email address
+      #
+      # @param params [Hash]
       #
       # @raises [Naas::InvalidRequestError]
       #
@@ -66,22 +67,14 @@ module Naas
         request = Naas::Requests::SubscriberEmailAddresses.create(params)
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
-
-          return Naas::Models::SubscriberEmailAddress.new(klass_attributes)
+          return Naas::Models::SubscriberEmailAddress.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          error           = Naas::Models::Error.new(response_data)
+          error           = Naas::Models::Error.new(resp.data_attributes)
           failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
 
-          Naas::Client.configuration.logger.info { failure_message }
+          Naas::Client.configuration.logger.error { failure_message }
 
           raise Naas::Errors::InvalidRequestError.new(failure_message)
         end
@@ -89,24 +82,41 @@ module Naas
 
       # Helper method to retrieve from the request
       #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
       # @return [Naas::Models::SubscriberEmailAddress]
       def self.retrieve(id, params={})
         request = Naas::Requests::SubscriberEmailAddresses.retrieve(id, params)
 
-        klass_attributes = {}
-
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
-          return Naas::Models::SubscriberEmailAddress.new(klass_attributes)
+          return Naas::Models::SubscriberEmailAddress.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the subscriber email address: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the subscriber email address: %s" % [resp.status]) }
 
           return nil
+        end
+      end
+
+      # Helper method to retrieve from the request
+      #
+      # @param id [Integer]
+      # @param params [Hash]
+      #
+      # @raises [Naas::Errors::RecordNotFoundError]
+      #
+      # @return [Naas::Models::SubscriberEmailAddress]
+      def self.retrieve!(id, params={})
+        request = Naas::Requests::SubscriberEmailAddresses.retrieve(id, params)
+
+        request.on(:success) do |resp|
+          return Naas::Models::SubscriberEmailAddress.new(resp.data_attributes)
+        end
+
+        request.on(404) do
+          raise Naas::Errors::RecordNotFoundError.new("Could not find record with id: %s" % [id])
         end
       end
 

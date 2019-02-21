@@ -27,10 +27,19 @@ module Naas
       # Provides a simpler set of arguments to create
       # the basic notification
       #
+      # @param email_address [String]
+      # @param project_id [String]
+      # @param campaign_id [String]
+      # @param campaign_email_template_id [String]
+      # @param content [Hash]
+      # @param options [Hash]
+      #
       # @return [Naas::Response]
-      def self.create_from_attributes(email_address, campaign_email_template_id, content={}, options={})
+      def self.create_from_attributes(email_address, project_id, campaign_id, campaign_email_template_id, content={}, options={})
         record_attributes = {
-          :email_address => email_address,
+          :email_address              => email_address,
+          :project_id                 => project_id,
+          :campaign_id                => campaign_id,
           :campaign_email_template_id => campaign_email_template_id,
           :content                    => content,
         }

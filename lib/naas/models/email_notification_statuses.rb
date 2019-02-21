@@ -21,20 +21,13 @@ module Naas
       def self.retrieve_by_email_notification_id(email_notification_id, params={})
         request = Naas::Requests::EmailNotificationStatuses.retrieve_by_email_notification_id(email_notification_id, params)
 
-        klass_attributes = {}
-
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
+          return Naas::Models::EmailNotificationStatus.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the email notification status: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the email notification status: %s" % [resp.status]) }
         end
-
-        Naas::Models::EmailNotificationStatus.new(klass_attributes)
       end
 
       def each(&block)

@@ -15,21 +15,22 @@ module Naas
       # Helper method to retrieve from the
       # request
       #
+      # @param project_id [String]
+      # @param campaign_id [String]
+      # @param params [Hash]
+      #
       # @return [Naas::Models::CampaignEmailTemplates]
-      def self.list_by_campaign_id(campaign_id, params={})
-        request = Naas::Requests::CampaignEmailTemplates.list_by_campaign_id(campaign_id, params)
+      def self.list_by_project_id_and_campaign_id(project_id, campaign_id, params={})
+        request = Naas::Requests::CampaignEmailTemplates.list_by_project_id_and_campaign_id(project_id, campaign_id, params)
 
         klass_attributes = []
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', [])
-
-          klass_attributes = response_data
+          klass_attributes = resp.data_attributes
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the campaigns: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the email templates: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -37,51 +38,68 @@ module Naas
 
       # Helper method to retrieve from the request
       #
+      # @param project_id [String]
+      # @param campaign_id [String]
+      # @param id [String]
+      # @param params [Hash]
+      #
       # @return [Naas::Models::CampaignEmailTemplate]
-      def self.retrieve_by_campaign_id(campaign_id, id, params={})
-        request = Naas::Requests::CampaignEmailTemplates.retrieve_by_campaign_id(campaign_id, id, params)
-
-        klass_attributes = {}
+      def self.retrieve_by_project_id_and_campaign_id(project_id, campaign_id, id, params={})
+        request = Naas::Requests::CampaignEmailTemplates.retrieve_by_project_id_and_campaign_id(project_id, campaign_id, id, params)
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
+          return Naas::Models::CampaignEmailTemplate.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.info { ("Failure retrieving the campaign: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the email template: %s" % [resp.status]) }
+
+          return nil
+        end
+      end
+
+      # Helper method to retrieve from the request
+      #
+      # @param project_id [String]
+      # @param campaign_id [String]
+      # @param id [String]
+      # @param params [Hash]
+      #
+      # @raises [Naas::Errors::RecordNotFoundError]
+      #
+      # @return [Naas::Models::CampaignEmailTemplate]
+      def self.retrieve_by_project_id_and_campaign_id!(project_id, campaign_id, id, params={})
+        request = Naas::Requests::CampaignEmailTemplates.retrieve_by_project_id_and_campaign_id(project_id, campaign_id, id, params)
+
+        request.on(:success) do |resp|
+          return Naas::Models::CampaignEmailTemplate.new(resp.data_attributes)
         end
 
-        Naas::Models::CampaignEmailTemplate.new(klass_attributes)
+        request.on(404) do
+          raise Naas::Errors::RecordNotFoundError.new("Could not find record with id: %s" % [id])
+        end
       end
 
       # Create a new campaign email template
       #
+      # @param project_id [String]
+      # @param campaign_id [String]
+      #
       # @raises [Naas::InvalidRequestError]
       #
       # @return [Naas::Models::CampaignEmailTemplate]
-      def self.create_by_campaign_id(campaign_id, params={})
-        request = Naas::Requests::CampaignEmailTemplates.create_by_campaign_id(campaign_id, params)
+      def self.create_by_project_id_and_campaign_id(project_id, campaign_id, params={})
+        request = Naas::Requests::CampaignEmailTemplates.create_by_project_id_and_campaign_id(project_id, campaign_id, params)
 
         request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          klass_attributes = response_data
-
-          return Naas::Models::CampaignEmailTemplate.new(klass_attributes)
+          return Naas::Models::CampaignEmailTemplate.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          error           = Naas::Models::Error.new(response_data)
+          error           = Naas::Models::Error.new(resp.data_attributes)
           failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
 
-          Naas::Client.configuration.logger.info { failure_message }
+          Naas::Client.configuration.logger.error { failure_message }
 
           raise Naas::Errors::InvalidRequestError.new(failure_message)
         end
