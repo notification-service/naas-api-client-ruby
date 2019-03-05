@@ -44,6 +44,8 @@ module Naas
           :content                    => content,
         }
 
+        record_attributes.merge!(tags: options.fetch(:tags, {}))
+
         if options.has_key?(:account_smtp_setting_id)
           record_attributes.merge!(account_smtp_setting_id: options[:account_smtp_setting_id])
         end
