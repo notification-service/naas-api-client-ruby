@@ -1,5 +1,4 @@
 require 'spec_helper'
-#require 'client_configuration'
 
 RSpec.describe(Naas::Models::Projects) do
   before(:all) do
@@ -13,12 +12,34 @@ RSpec.describe(Naas::Models::Projects) do
     WebMock.disable!
   end
 
+  let(:params) do
+    {
+      :name        => 'My First Project',
+      :description => 'My first description'
+    }
+  end
 
-  describe ".list" do
-    it "returns an empty list with no projects" do
-      records = described_class.list
+  describe ".created" do
+    context "with validations" do
+      it "ensures there is a name" do
+        params[:name] = nil
 
-      expect(records.any?).to be(false)
+        expect { described_class.create(params) }.to raise_error(Naas::Errors::InvalidRequestError)
+      end
+
+      it "ensures the #id is valid" do
+        params[:id] = 'invalid id'
+
+        expect { described_class.create(params) }.to raise_error(Naas::Errors::InvalidRequestError)
+      end
+    end
+
+    context "with valid data" do
+      it "creates a new record" do
+        record = described_class.create(params)
+
+        expect(record.name).to eq('My First Project')
+      end
     end
   end
 end
