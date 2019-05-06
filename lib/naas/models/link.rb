@@ -18,6 +18,7 @@ module Naas
       def title
         @attributes['title']
       end
+      alias name title
 
       # Returns the href
       #
