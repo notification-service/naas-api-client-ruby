@@ -18,9 +18,9 @@ RSpec.describe(Naas::Models::Campaigns) do
 
   let(:project) do
     begin
-      Naas::Models::Projects.create(id: @project_id, name: 'Campaign Testing')
-    rescue Naas::Errors::InvalidRequestError
-      Naas::Models::Projects.retrieve(@project_id)
+      Naas::Models::Projects.retrieve!(project_id)
+    rescue Naas::Errors::RecordNotFoundError
+      Naas::Models::Projects.create(id: project_id, name: 'Campaign Testing', description: 'testing the campaign')
     end
   end
 
