@@ -1,6 +1,7 @@
 # http://www.relaxdiego.com/2013/06/mocking-web-services-with-vcr.html
 
 require 'webmock/rspec'
+require 'securerandom'
 
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }

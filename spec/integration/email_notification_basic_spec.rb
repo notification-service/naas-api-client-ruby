@@ -24,6 +24,10 @@ RSpec.describe(Naas::Models::EmailNotificationBasic) do
     'campaign-email-template-testing'
   end
 
+  let(:account_smtp_setting_id) do
+    'campaign-account-smtp-setting-testing'
+  end
+
   let(:project) do
     begin
       Naas::Models::Projects.retrieve!(project_id)
@@ -60,12 +64,42 @@ RSpec.describe(Naas::Models::EmailNotificationBasic) do
     end
   end
 
+  let(:account_smtp_setting_params) do
+    {
+      :name                      => 'My SMTP Provider',
+      :description               => 'My SMTP description',
+      :address                   => ENV['TEST_SMTP_HOST'],
+      :domain                    => 'app.example.com',
+      :password                  => ENV['TEST_SMTP_PASSWORD'],
+      :password_confirmation     => ENV['TEST_SMTP_PASSWORD'],
+      :port                      => 587,
+      :user_name                 => ENV['TEST_SMTP_USERNAME'],
+      :authentication_type_value => 'plain',
+      :is_primary                => true
+    }
+  end
+
+  let(:account_smtp_setting) do
+    begin
+      Naas::Models::AccountSmtpSettings.retrieve!(account_smtp_setting_id)
+    rescue Naas::Errors::RecordNotFoundError
+      Naas::Models::AccountSmtpSettings.create(account_smtp_setting_params.merge!(id: account_smtp_setting_id))
+    end
+  end
+
+  let(:email_address) do
+    ("lester+%s@test.com" % [SecureRandom.hex(12)])
+  end
+
   let(:params) do
     {
       :project_id                 => project.id,
       :campaign_id                => campaign.id,
       :campaign_email_template_id => campaign_email_template.id,
-      :email_address              => 'lester@test.com'
+      :email_address              => email_address,
+      :options => {
+        :account_smtp_setting_id    => account_smtp_setting.id,
+      }
     }
   end
 
@@ -82,7 +116,7 @@ RSpec.describe(Naas::Models::EmailNotificationBasic) do
       it "creates a new record" do
         record = described_class.create(params)
 
-        expect(record.email_address).to eq('leste@test.com')
+        expect(record.to_email_address).to eq(email_address)
       end
     end
   end

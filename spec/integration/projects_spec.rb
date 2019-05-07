@@ -19,7 +19,7 @@ RSpec.describe(Naas::Models::Projects) do
     }
   end
 
-  describe ".created" do
+  describe ".create" do
     context "with validations" do
       it "ensures there is a name" do
         params[:name] = nil
