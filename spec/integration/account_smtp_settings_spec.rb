@@ -47,6 +47,12 @@ RSpec.describe(Naas::Models::AccountSmtpSettings) do
         expect { described_class.create(params) }.to raise_error(Naas::Errors::InvalidRequestError)
       end
 
+      it "ensures there is a #domain" do
+        params[:domain] = nil
+
+        expect { described_class.create(params) }.to raise_error(Naas::Errors::InvalidRequestError)
+      end
+
 
       it "ensures there is a #user_name" do
         params[:user_name] = nil
