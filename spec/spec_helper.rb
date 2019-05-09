@@ -17,6 +17,14 @@ RSpec.configure do |config|
     WebMock.disable!
   end
 
+  config.after(:each, type: :integration) do
+    Naas::Requests::Accounts.destroy_data
+  end
+
+  config.after(:suite) do
+    Naas::Requests::Accounts.destroy_data
+  end
+
   config.before(:all, type: :integration) do
     WebMock.disable!
 
