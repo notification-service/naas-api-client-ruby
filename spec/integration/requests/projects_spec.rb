@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe(Naas::Models::Projects, type: :integration) do
+RSpec.describe(Naas::Requests::Projects, type: :integration) do
   let(:params) do
     {
       :name        => 'My First Project',
@@ -8,18 +8,28 @@ RSpec.describe(Naas::Models::Projects, type: :integration) do
     }
   end
 
+  describe ".list" do
+    it "returns a 200 status code" do
+      expect(described_class.list.status).to eq(200)
+    end
+
+    it "returns a collection of data" do
+      expect(described_class.list.data_attributes).to be_a(Array)
+    end
+  end
+
   describe ".create" do
     context "with validations" do
       it "ensures there is a name" do
         params[:name] = nil
 
-        expect { described_class.create(params) }.to raise_error(Naas::Errors::InvalidRequestError)
+        expect(described_class.create(params).status).to eq(409)
       end
 
       it "ensures the #id is valid" do
         params[:id] = 'invalid id'
 
-        expect { described_class.create(params) }.to raise_error(Naas::Errors::InvalidRequestError)
+        expect(described_class.create(params).status).to eq(409)
       end
     end
 
@@ -27,7 +37,7 @@ RSpec.describe(Naas::Models::Projects, type: :integration) do
       it "creates a new record" do
         record = described_class.create(params)
 
-        expect(record.name).to eq('My First Project')
+        expect(record.status).to eq(201)
       end
     end
   end

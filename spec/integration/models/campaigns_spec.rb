@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe(Naas::Models::Campaigns) do
+RSpec.describe(Naas::Models::Campaigns, type: :integration) do
   let(:project_id) do
     'campaign-testing'
   end

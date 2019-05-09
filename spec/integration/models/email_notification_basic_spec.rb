@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe(Naas::Models::EmailNotificationBasic) do
+RSpec.describe(Naas::Models::EmailNotificationBasic, type: :integration) do
   let(:project_id) do
     'campaign-testing'
   end
