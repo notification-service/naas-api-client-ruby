@@ -42,6 +42,24 @@ module Naas
 
         Naas::Response.new(request)
       end
+
+      # Destroy data for the account
+      #
+      # @note: This is only supported with a valid test token
+      #
+      # @return [Naas::Response]
+      def self.destroy_data
+        rel   = Naas::Client.rel_for('rels/account-data')
+        route = Naas::Client.routes.find_by_rel(rel)
+        url   = route.url_for
+
+        request = Naas::Client.connection.delete do |req|
+          req.url(url)
+          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+        end
+
+        Naas::Response.new(request)
+      end
     end
   end
 end
