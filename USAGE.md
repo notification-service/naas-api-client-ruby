@@ -61,6 +61,7 @@ account_smtp_setting_attributes = {
   :id                        => 'gmail-domain-account',
   :name                      => 'Gmail',
   :description               => 'Gmail domain account',
+  :domain                    => 'example.com',
   :address                   => 'smtp.gmail.com',
   :port                      => 587,
   :user_name                 => 'apikey',
