@@ -1,17 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe(Naas::Models::Campaigns) do
-  before(:all) do
-    Naas::Client.configure do |config|
-      config.api_host       = ENV.fetch('NAAS_API_HOST_TEST')
-      config.access_token   = ENV.fetch('NAAS_ACCESS_TOKEN_TEST')
-      config.logger         = Logger.new(File.expand_path('../../../log/naas_test.log', __FILE__))
-      config.request_logger = Logger.new(File.expand_path('../../../log/naas_test_requests.log', __FILE__))
-    end
-
-    WebMock.disable!
-  end
-
   let(:project_id) do
     'campaign-testing'
   end
