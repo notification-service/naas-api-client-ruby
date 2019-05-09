@@ -18,6 +18,52 @@ RSpec.describe(Naas::Requests::Projects, type: :integration) do
     end
   end
 
+  describe ".retrieve" do
+    before(:all) do
+      record_params = {
+        :id          => 'test-retrieve',
+        :name        => 'My First Project',
+        :description => 'My first description'
+      }
+
+      described_class.create(record_params)
+    end
+
+    it "returns a 200 OK" do
+      expect(described_class.retrieve('test-retrieve').status).to eq(200)
+    end
+  end
+
+  describe ".update" do
+    before(:all) do
+      record_params = {
+        :id          => 'test-retrieve',
+        :name        => 'My First Project',
+        :description => 'My first description'
+      }
+
+      described_class.create(record_params)
+    end
+
+    it "permits updating the name" do
+      expect(described_class.update('test-retrieve', name: 'New Name').status).to eq(200)
+    end
+
+    context "with validations" do
+      it "ensures there is a name" do
+        params[:name] = nil
+
+        expect(described_class.update('test-retrieve', params).status).to eq(409)
+      end
+
+      it "ensures the #id is valid" do
+        params[:id] = 'invalid id'
+
+        expect(described_class.update('test-retrieve', params).status).to eq(409)
+      end
+    end
+  end
+
   describe ".create" do
     context "with validations" do
       it "ensures there is a name" do
