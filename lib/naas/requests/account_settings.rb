@@ -25,6 +25,8 @@ module Naas
       #
       # @return [Naas::Response]
       def self.update(params={})
+        raise Naas::Errors::InvalidArgumentError.new("params must be a hash") unless params.kind_of?(Hash)
+
         rel   = Naas::Client.rel_for('rels/account-settings')
         route = Naas::Client.routes.find_by_rel(rel)
         url   = route.url_for
