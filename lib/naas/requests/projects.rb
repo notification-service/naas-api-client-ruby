@@ -42,8 +42,12 @@ module Naas
       #
       # @param params [Hash] Attributes for the domain model
       #
+      # @raises [Naas::InvalidArgumentError]
+      #
       # @return [Naas::Response]
       def self.create(params={})
+        raise Naas::Errors::InvalidArgumentError.new("params must be a hash") unless params.kind_of?(Hash)
+
         rel   = Naas::Client.rel_for('rels/projects')
         route = Naas::Client.routes.find_by_rel(rel)
         url   = route.url_for
@@ -67,8 +71,12 @@ module Naas
       # @param id [Integer]
       # @param params [Hash] Attributes for the domain model
       #
+      # @raises [Naas::InvalidArgumentError]
+      #
       # @return [Naas::Response]
       def self.update(id, params={})
+        raise Naas::Errors::InvalidArgumentError.new("params must be a hash") unless params.kind_of?(Hash)
+
         rel   = Naas::Client.rel_for('rels/project')
         route = Naas::Client.routes.find_by_rel(rel)
         url   = route.url_for(id: id)

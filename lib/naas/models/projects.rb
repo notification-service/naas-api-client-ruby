@@ -79,12 +79,9 @@ module Naas
       # @param params [Hash]
       #
       # @raises [Naas::InvalidRequestError]
-      # @raises [Naas::InvalidArgumentError]
       #
       # @return [Naas::Models::Project]
       def self.create(params={})
-        raise Naas::Errors::InvalidArgumentError.new("params must be a hash") unless params.kind_of?(Hash)
-
         request = Naas::Requests::Projects.create(params)
 
         request.on(:success) do |resp|
