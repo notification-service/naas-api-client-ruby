@@ -18,7 +18,7 @@ RSpec.configure do |config|
   end
 
   config.after(:each, type: :integration) do
-    Naas::Requests::Accounts.destroy_data
+    #Naas::Requests::Accounts.destroy_data
   end
 
   config.after(:suite) do
