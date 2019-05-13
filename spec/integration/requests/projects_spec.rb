@@ -59,16 +59,24 @@ RSpec.describe(Naas::Requests::Projects, type: :integration) do
 
     context "with validations" do
       context "arguments" do
-        it "gracefully handles nil" do
-          expect { described_class.update('test-retrieve', nil) }.to raise_error(Naas::Errors::InvalidArgumentError)
+        context "id" do
+          it "raises an exception if nil is presented" do
+            expect { described_class.update(nil, params) }.to raise_error(Naas::Errors::InvalidArgumentError)
+          end
         end
 
-        it "gracefully handles number" do
-          expect { described_class.update('test-retrieve', 22) }.to raise_error(Naas::Errors::InvalidArgumentError)
-        end
+        context "params" do
+          it "raises an exception if nil is provided" do
+            expect { described_class.update('test-retrieve', nil) }.to raise_error(Naas::Errors::InvalidArgumentError)
+          end
 
-        it "gracefully handles string" do
-          expect { described_class.update('test-retrieve', 'invalid') }.to raise_error(Naas::Errors::InvalidArgumentError)
+          it "raises an exception if a number is provided" do
+            expect { described_class.update('test-retrieve', 22) }.to raise_error(Naas::Errors::InvalidArgumentError)
+          end
+
+          it "raises an exception if a string is provided" do
+            expect { described_class.update('test-retrieve', 'invalid') }.to raise_error(Naas::Errors::InvalidArgumentError)
+          end
         end
       end
 
