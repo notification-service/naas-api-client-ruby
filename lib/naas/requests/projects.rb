@@ -26,9 +26,11 @@ module Naas
       #
       # @return [Naas::Response]
       def self.retrieve(id, params={})
+        raise Naas::Errors::InvalidArgumentError.new("id must be provided") if id.nil?
+
         rel   = Naas::Client.rel_for('rels/project')
         route = Naas::Client.routes.find_by_rel(rel)
-        url   = route.url_for(params.merge!(id: id))
+        url   = route.url_for(params.merge!(id: id.to_s))
 
         request = Naas::Client.connection.get do |req|
           req.url(url)

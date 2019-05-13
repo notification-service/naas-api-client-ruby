@@ -32,6 +32,14 @@ RSpec.describe(Naas::Requests::Projects, type: :integration) do
     it "returns a 200 OK" do
       expect(described_class.retrieve('test-retrieve').status).to eq(200)
     end
+
+    it "returns a 404 not found for non existent record" do
+      expect(described_class.retrieve('notfound').status).to eq(404)
+    end
+
+    it "returns a 404 not found for nil" do
+      expect { described_class.retrieve(nil) }.to raise_error(Naas::Errors::InvalidArgumentError)
+    end
   end
 
   describe ".update" do
