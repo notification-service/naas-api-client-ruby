@@ -9,6 +9,9 @@ require File.expand_path('../models/error_item', __FILE__)
 require File.expand_path('../models/links', __FILE__)
 require File.expand_path('../models/link', __FILE__)
 
+require File.expand_path('../models/data_types', __FILE__)
+require File.expand_path('../models/data_type', __FILE__)
+
 require File.expand_path('../models/projects', __FILE__)
 require File.expand_path('../models/project', __FILE__)
 

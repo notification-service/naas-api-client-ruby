@@ -1,15 +1,13 @@
 module Naas
   module Models
-    class Campaign
+    class DataType
       include Comparable
 
-      # Returns an instance of the Campaign
-      #
-      # has_many :campaign_email_templates
+      # Returns an instance of the DataType
       #
       # @param attributes [Hash]
       #
-      # @return [Naas::Models::Campaign]
+      # @return [Naas::Models::DataType]
       def initialize(attributes={})
         @attributes = attributes
       end
@@ -19,13 +17,6 @@ module Naas
       # @return [Integer]
       def id
         @attributes['id']
-      end
-
-      # Returns the associated project id
-      #
-      # @return [Integer]
-      def project_id
-        @attributes['project_id']
       end
 
       # Returns the name
@@ -40,37 +31,6 @@ module Naas
       # @return [String]
       def description
         @attributes['description']
-      end
-
-      # Return the associated campaign email templates
-      # attributes
-      #
-      # @return [Array]
-      def campaign_email_templates_attributes
-        @attributes.fetch('campaign_email_templates', [])
-      end
-
-      # Returns true if there are campaign email template
-      # attributes
-      #
-      # @return [Boolean]
-      def campaign_email_templates_attributes?
-        self.campaign_email_templates_attributes.any?
-      end
-
-      # Returns the campaign email templates
-      #
-      # @return [Naas::Models::CampaignEmailTemplates]
-      def campaign_email_templates
-        @campaign_email_templates ||= if self.campaign_email_templates_attributes?
-                                        Naas::Models::CampaignEmailTemplates.new(self.campaign_email_templates)
-                                      else
-                                        Naas::Models::CampaignEmailTemplates.list_by_project_id_and_campaign_id(self.project_id, self.id)
-                                      end
-      end
-
-      def campaign_email_templates?
-        self.campaign_email_templates.any?
       end
 
       # Returns the created at timestamp
@@ -114,6 +74,20 @@ module Naas
       # @return [Boolean]
       def links?
         self.links.any?
+      end
+
+      # Returns the record serialized as an array
+      #
+      # @return [Array]
+      def to_a
+        [self.id, self.name, self.description, self.created_at]
+      end
+
+      # Returns the record as an option
+      #
+      # @return [Array]
+      def to_option
+        [self.name, self.id]
       end
     end
   end
