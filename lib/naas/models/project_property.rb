@@ -32,6 +32,31 @@ module Naas
         @attributes['data_type_id']
       end
 
+      # Returns the data type attributes
+      #
+      # @return [Hash]
+      def data_type_attributes
+        @attributes.fetch('data_type', {})
+      end
+
+      # Returns true if there are data type attributes
+      #
+      # @return [Boolean]
+      def data_type_attributes?
+        !self.data_type_attributes.empty?
+      end
+
+      # Returns the data type model
+      #
+      # @return [Naas::Models::DataType,NilClass]
+      def data_type
+        if self.data_type_attributes?
+          Naas::Models::DataType.new(self.data_type_attributes)
+        else
+          Naas::Models::DataTypes.retrieve(self.data_type_id)
+        end
+      end
+
       # Returns the name
       #
       # @return [String]
