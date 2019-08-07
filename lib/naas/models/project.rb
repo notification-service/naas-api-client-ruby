@@ -123,6 +123,13 @@ module Naas
       def links?
         self.links.any?
       end
+
+      # Returns the record as an array
+      #
+      # @return [Array]
+      def to_a
+        [self.id, self.name, self.description, self.campaigns_count, self.created_at]
+      end
     end
   end
 end
