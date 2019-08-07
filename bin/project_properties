@@ -39,10 +39,10 @@ core_options = default_options.merge!(options)
 
 project_id = core_options.delete(:project_id)
 
-projects = Naas::Models::ProjectProperties.list_by_project_id(project_id, core_options)
-title    = projects.class.name
-rows     = projects.to_a
-headings = projects.headings
+records  = Naas::Models::ProjectProperties.list_by_project_id(project_id, core_options)
+title    = records.class.name
+rows     = records.to_a
+headings = records.headings
 
 table = Terminal::Table.new(rows: rows, headings: headings, title: title)
 puts table.to_s

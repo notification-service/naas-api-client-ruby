@@ -19,7 +19,7 @@ default_options = {
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: bundle exec bin/projects"
+  opts.banner = "Usage: bundle exec bin/data_types"
 
   opts.on('--page [VAL]', 'Specific page of results') do |v|
     options[:page] = v
@@ -32,7 +32,7 @@ end.parse!
 
 core_options = default_options.merge!(options)
 
-records  = Naas::Models::Projects.list(core_options)
+records  = Naas::Models::DataTypes.list(core_options)
 title    = records.class.name
 rows     = records.to_a
 headings = records.headings
