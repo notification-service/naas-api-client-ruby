@@ -1,13 +1,13 @@
 module Naas
   module Models
-    class Campaigns
+    class ProjectProperties
       include Enumerable
 
-      # Return an instance of the campaigns
+      # Return an instance of the project properties
       #
       # @param collection [Array]
       #
-      # @return [Naas::Models::Campaigns]
+      # @return [Naas::Models::ProjectProperties]
       def initialize(collection)
         @collection = Array(collection)
       end
@@ -18,9 +18,9 @@ module Naas
       # @param project_id [String]
       # @param params [Hash]
       #
-      # @return [Naas::Models::Campaigns]
+      # @return [Naas::Models::ProjectProperties]
       def self.list_by_project_id(project_id, params={})
-        request = Naas::Requests::Campaigns.list_by_project_id(project_id, params)
+        request = Naas::Requests::ProjectProperties.list_by_project_id(project_id, params)
 
         klass_attributes = []
 
@@ -29,7 +29,7 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.error { ("Failure retrieving the campaigns: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the project properties: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -41,16 +41,16 @@ module Naas
       # @param id [String]
       # @param params [Hash]
       #
-      # @return [Naas::Models::Campaign]
+      # @return [Naas::Models::ProjectProperty]
       def self.retrieve_by_project_id(project_id, id, params={})
-        request = Naas::Requests::Campaigns.retrieve_by_project_id(project_id, id, params)
+        request = Naas::Requests::ProjectProperties.retrieve_by_project_id(project_id, id, params)
 
         request.on(:success) do |resp|
-          return Naas::Models::Campaign.new(resp.data_attributes)
+          return Naas::Models::ProjectProperty.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.error { ("Failure retrieving the campaign: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the project property: %s" % [resp.status]) }
 
           return nil
         end
@@ -64,12 +64,12 @@ module Naas
       #
       # @raises [Naas::Errors::RecordNotFoundError]
       #
-      # @return [Naas::Models::Campaign]
+      # @return [Naas::Models::ProjectProperty]
       def self.retrieve_by_project_id!(project_id, id, params={})
-        request = Naas::Requests::Campaigns.retrieve_by_project_id(project_id, id, params)
+        request = Naas::Requests::ProjectProperties.retrieve_by_project_id(project_id, id, params)
 
         request.on(:success) do |resp|
-          return Naas::Models::Campaign.new(resp.data_attributes)
+          return Naas::Models::ProjectProperty.new(resp.data_attributes)
         end
 
         request.on(404) do
@@ -77,19 +77,19 @@ module Naas
         end
       end
 
-      # Create a new campaign
+      # Create a new project property
       #
       # @param project_id [String]
       # @param params [Hash]
       #
       # @raises [Naas::InvalidRequestError]
       #
-      # @return [Naas::Models::Campaign]
+      # @return [Naas::Models::ProjectProperty]
       def self.create_by_project_id(project_id, params={})
-        request = Naas::Requests::Campaigns.create_by_project_id(project_id, params)
+        request = Naas::Requests::ProjectProperties.create_by_project_id(project_id, params)
 
         request.on(:success) do |resp|
-          return Naas::Models::Campaign.new(resp.data_attributes)
+          return Naas::Models::ProjectProperty.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
@@ -102,7 +102,7 @@ module Naas
         end
       end
 
-      # Update an existing campaign
+      # Update an existing project property
       #
       # @param project_id [String]
       # @param id [String]
@@ -110,12 +110,12 @@ module Naas
       #
       # @raises [Naas::InvalidRequestError]
       #
-      # @return [Naas::Models::Campaign]
+      # @return [Naas::Models::ProjectProperty]
       def self.update_by_project_id(project_id, id, params={})
-        request = Naas::Requests::Campaigns.update_by_project_id(project_id, id, params)
+        request = Naas::Requests::ProjectProperties.update_by_project_id(project_id, id, params)
 
         request.on(:success) do |resp|
-          return Naas::Models::Campaign.new(resp.data_attributes)
+          return Naas::Models::ProjectProperty.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
@@ -134,7 +134,7 @@ module Naas
 
       private
       def internal_collection
-        @collection.map { |record| Naas::Models::Campaign.new(record) }
+        @collection.map { |record| Naas::Models::ProjectProperty.new(record) }
       end
     end
   end

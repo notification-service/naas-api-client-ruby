@@ -12,6 +12,9 @@ require File.expand_path('../models/link', __FILE__)
 require File.expand_path('../models/projects', __FILE__)
 require File.expand_path('../models/project', __FILE__)
 
+require File.expand_path('../models/project_properties', __FILE__)
+require File.expand_path('../models/project_property', __FILE__)
+
 require File.expand_path('../models/campaigns', __FILE__)
 require File.expand_path('../models/campaign', __FILE__)
 
