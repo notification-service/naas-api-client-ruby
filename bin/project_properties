@@ -4,6 +4,14 @@ require 'naas/client'
 require 'optparse'
 require 'terminal-table'
 
+request_logger_path = File.expand_path('../../log', __FILE__)
+request_logger_file = File.expand_path('requests.log', request_logger_path)
+request_logger      = Logger.new(request_logger_file)
+
+Naas::Client.configure do |c|
+  c.request_logger = request_logger
+end
+
 default_options = {
   :per_page   => 10,
   :page       => 1,
