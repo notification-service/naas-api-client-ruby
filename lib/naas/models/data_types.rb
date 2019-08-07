@@ -1,15 +1,15 @@
 module Naas
   module Models
-    class Projects
+    class DataTypes
       include Enumerable
 
-      COLUMNS = ['ID', 'Name', 'Description', 'Campaigns', 'Created At']
+      COLUMNS = ['ID', 'Name', 'Description', 'Created At']
 
-      # Return an instance of the projects
+      # Return an instance of the data types
       #
       # @param collection [Array]
       #
-      # @return [Naas::Models::Projects]
+      # @return [Naas::Models::DataTypes]
       def initialize(collection)
         @collection = Array(collection)
       end
@@ -33,9 +33,9 @@ module Naas
       #
       # @param params [Hash]
       #
-      # @return [Naas::Models::Projects]
+      # @return [Naas::Models::DataTypes]
       def self.list(params={})
-        request = Naas::Requests::Projects.list(params)
+        request = Naas::Requests::DataTypes.list(params)
 
         klass_attributes = []
 
@@ -44,7 +44,7 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.error { ("Failure retrieving the projects: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the data types: %s" % [resp.status]) }
         end
 
         self.new(klass_attributes)
@@ -55,16 +55,16 @@ module Naas
       # @param id [String]
       # @param params [Hash]
       #
-      # @return [Naas::Models::Project]
+      # @return [Naas::Models::DataType]
       def self.retrieve(id, params={})
-        request = Naas::Requests::Projects.retrieve(id, params)
+        request = Naas::Requests::DataTypes.retrieve(id, params)
 
         request.on(:success) do |resp|
-          return Naas::Models::Project.new(resp.data_attributes)
+          return Naas::Models::DataType.new(resp.data_attributes)
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.error { ("Failure retrieving the project: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the data type: %s" % [resp.status]) }
 
           return nil
         end
@@ -77,40 +77,16 @@ module Naas
       #
       # @raises [Naas::Errors::RecordNotFoundError]
       #
-      # @return [Naas::Models::Project]
+      # @return [Naas::Models::DataType]
       def self.retrieve!(id, params={})
-        request = Naas::Requests::Projects.retrieve(id, params)
+        request = Naas::Requests::DataTypes.retrieve(id, params)
 
         request.on(:success) do |resp|
-          return Naas::Models::Project.new(resp.data_attributes)
+          return Naas::Models::DataType.new(resp.data_attributes)
         end
 
         request.on(404) do
           raise Naas::Errors::RecordNotFoundError.new("Could not find record with id: %s" % [id])
-        end
-      end
-
-      # Create a new project
-      #
-      # @param params [Hash]
-      #
-      # @raises [Naas::InvalidRequestError]
-      #
-      # @return [Naas::Models::Project]
-      def self.create(params={})
-        request = Naas::Requests::Projects.create(params)
-
-        request.on(:success) do |resp|
-          return Naas::Models::Project.new(resp.data_attributes)
-        end
-
-        request.on(:failure) do |resp|
-          error           = Naas::Models::Error.new(resp.data_attributes)
-          failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
-
-          Naas::Client.configuration.logger.error { failure_message }
-
-          raise Naas::Errors::InvalidRequestError.new(failure_message)
         end
       end
 
@@ -125,9 +101,16 @@ module Naas
         self.map(&:to_a)
       end
 
+      # Returns an array of options
+      #
+      # @return [Array]
+      def to_options
+        self.map(&:to_option)
+      end
+
       private
       def internal_collection
-        @collection.map { |record| Naas::Models::Project.new(record) }
+        @collection.map { |record| Naas::Models::DataType.new(record) }
       end
     end
   end

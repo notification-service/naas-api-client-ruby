@@ -14,6 +14,7 @@ module Naas
         @attributes = attributes
       end
 
+      # Returns the ID
       #
       # @return [Integer]
       def id

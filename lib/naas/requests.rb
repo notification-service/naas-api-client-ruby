@@ -1,5 +1,7 @@
 require File.expand_path('../requests/directory', __FILE__)
+require File.expand_path('../requests/data_types', __FILE__)
 require File.expand_path('../requests/projects', __FILE__)
+require File.expand_path('../requests/project_properties', __FILE__)
 require File.expand_path('../requests/campaigns', __FILE__)
 require File.expand_path('../requests/campaign_email_templates', __FILE__)
 require File.expand_path('../requests/accounts', __FILE__)
