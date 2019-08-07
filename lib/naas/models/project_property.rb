@@ -113,6 +113,13 @@ module Naas
       def links?
         self.links.any?
       end
+
+      # Serialized the record as an array
+      #
+      # @return [Array]
+      def to_a
+        [self.id, self.project_id, self.data_type_id, self.name, self.key_name, self.description, self.is_subscriber_editable, self.is_subscriber_viewable, self.created_at]
+      end
     end
   end
 end

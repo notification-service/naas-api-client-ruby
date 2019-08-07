@@ -3,6 +3,8 @@ module Naas
     class ProjectProperties
       include Enumerable
 
+      COLUMNS = ['ID', 'Project ID', 'Data Type ID', 'Name', 'Key Name', 'Description', 'Subscriber Editable', 'Subscriber Viewable', 'Created At']
+
       # Return an instance of the project properties
       #
       # @param collection [Array]
@@ -10,6 +12,20 @@ module Naas
       # @return [Naas::Models::ProjectProperties]
       def initialize(collection)
         @collection = Array(collection)
+      end
+
+      # Helper to retrieve the headings collection
+      #
+      # @return [Array]
+      def self.headings
+        COLUMNS
+      end
+
+      # Returns the class level headings
+      #
+      # @return [Array]
+      def headings
+        self.class.headings
       end
 
       # Helper method to retrieve from the
@@ -130,6 +146,13 @@ module Naas
 
       def each(&block)
         internal_collection.each(&block)
+      end
+
+      # Returns the collection serialized as an array
+      #
+      # @return [Array]
+      def to_a
+        self.map(&:to_a)
       end
 
       private
