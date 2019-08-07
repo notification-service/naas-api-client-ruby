@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'naas/client'
+require 'optparse'
+require 'terminal-table'
+
+default_options = {
+  :per_page => 10,
+  :page     => 1
+}
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: bundle exec bin/projects"
+
+  opts.on('--page [VAL]', 'Specific page of results') do |v|
+    options[:page] = v
+  end
+
+  opts.on('--per-page [VAL]', 'Items per page') do |v|
+    options[:per_page] = v
+  end
+end.parse!
+
+core_options = default_options.merge!(options)
+
+projects = Naas::Models::Projects.list(core_options)
+title    = projects.class.name
+rows     = projects.to_a
+headings = projects.headings
+
+table = Terminal::Table.new(rows: rows, headings: headings, title: title)
+puts table.to_s
