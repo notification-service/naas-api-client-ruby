@@ -1,56 +1,15 @@
 module Naas
   module Models
-    class Project
+    class DataType
       include Comparable
 
-      # Returns an instance of the Project
+      # Returns an instance of the DataType
       #
       # @param attributes [Hash]
       #
-      # @return [Naas::Models::Project]
+      # @return [Naas::Models::DataType]
       def initialize(attributes={})
         @attributes = attributes
-
-        @errors = []
-      end
-
-      def errors
-        @errors
-      end
-
-      def errors?
-        @errors.any?
-      end
-
-      def valid?
-        !self.errors?
-      end
-
-      def save
-        record_params = {
-          :name        => self.name,
-          :description => self.description
-        }
-
-        request = Naas::Requests::Projects.create(record_params)
-
-        request.on(:success) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          return self.class.new(response_data)
-        end
-
-        request.on(:failure) do |resp|
-          response_body = resp.body
-          response_data = response_body.fetch('data', {})
-
-          error = Naas::Models::Error.new(response_data)
-
-          error.errors.each { |error_item| @errors.push(error_item.message) }
-
-          self
-        end
       end
 
       # Returns the ID
@@ -72,13 +31,6 @@ module Naas
       # @return [String]
       def description
         @attributes['description']
-      end
-
-      # Returns the counter cache for campaigns
-      #
-      # @return [Integer]
-      def campaigns_count
-        @attributes.fetch('campaigns_count', 0).to_i
       end
 
       # Returns the created at timestamp
@@ -124,11 +76,18 @@ module Naas
         self.links.any?
       end
 
-      # Returns the record as an array
+      # Returns the record serialized as an array
       #
       # @return [Array]
       def to_a
-        [self.id, self.name, self.description, self.campaigns_count, self.created_at]
+        [self.id, self.name, self.description, self.created_at]
+      end
+
+      # Returns the record as an option
+      #
+      # @return [Array]
+      def to_option
+        [self.name, self.id]
       end
     end
   end
