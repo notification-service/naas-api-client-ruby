@@ -4,6 +4,10 @@ require 'naas/client'
 require 'optparse'
 require 'terminal-table'
 
+pagination_display = ->(pagination) do
+  "You are viewing page %s of %s total pages. There are a total of %s records." % [pagination.page, pagination.total_pages, pagination.total]
+end
+
 request_logger_path = File.expand_path('../../log', __FILE__)
 request_logger_file = File.expand_path('requests.log', request_logger_path)
 request_logger      = Logger.new(request_logger_file)
@@ -32,10 +36,23 @@ end.parse!
 
 core_options = default_options.merge!(options)
 
-records  = Naas::Models::Projects.list(core_options)
+model_request = Naas::Requests::Projects.list(core_options)
+
+records    = []
+pagination = Naas::Models::Pagination.new
+
+model_request.on(:success) do |resp|
+  records    = Naas::Models::Projects.new(resp.data_attributes)
+  pagination = resp.pagination
+end
+
 title    = records.class.name
 rows     = records.to_a
 headings = records.headings
 
 table = Terminal::Table.new(rows: rows, headings: headings, title: title)
 puts table.to_s
+
+puts "\n"
+puts pagination_display.call(pagination)
+puts "\n"
