@@ -32,6 +32,33 @@ module Naas
         @attributes['subscriber_id']
       end
 
+      # Returns the eager loaded subscriber
+      # attributes
+      #
+      # @return [Hash]
+      def subscriber_attributes
+        @attributes.fetch('subscriber', {})
+      end
+
+      # Returns true if there are subscriber
+      # attributes
+      #
+      # @return [Boolean]
+      def subscriber_attributes?
+        !self.subscriber_attributes.empty?
+      end
+
+      # Returns the associated subscriber
+      #
+      # @return [Naas::Models::Subscriber]
+      def subscriber
+        if self.subscriber_attributes?
+          Naas::Models::Subscriber.new(self.subscriber_attributes)
+        else
+          Naas::Models::Subscribers.retrieve(self.subscriber_id)
+        end
+      end
+
       # Returns the project subscriber code
       #
       # @return [String]
