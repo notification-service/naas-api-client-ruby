@@ -52,11 +52,14 @@ module Naas
       #
       # @return [Naas::Models::Subscriber]
       def subscriber
-        if self.subscriber_attributes?
-          Naas::Models::Subscriber.new(self.subscriber_attributes)
-        else
-          Naas::Models::Subscribers.retrieve(self.subscriber_id)
-        end
+        return @subscriber if @subscriber
+
+        @subscriber = if self.subscriber_attributes?
+                        Naas::Models::Subscriber.new(self.subscriber_attributes)
+                      else
+                        Naas::Models::Subscribers.retrieve(self.subscriber_id)
+                      end
+        @subscriber
       end
 
       # Returns the project subscriber code
