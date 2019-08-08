@@ -21,6 +21,8 @@ require File.expand_path('../models/project_property', __FILE__)
 require File.expand_path('../models/project_subscribers', __FILE__)
 require File.expand_path('../models/project_subscriber', __FILE__)
 
+require File.expand_path('../models/project_subscriber_profile', __FILE__)
+
 require File.expand_path('../models/campaigns', __FILE__)
 require File.expand_path('../models/campaign', __FILE__)
 
