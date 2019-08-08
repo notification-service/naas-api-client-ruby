@@ -124,6 +124,14 @@ module Naas
         internal_collection.each(&block)
       end
 
+      # Returns the display name of a list of
+      # email addresses
+      #
+      # @return [String]
+      def display_name
+        self.map(&:email_address).join(', ')
+      end
+
       private
       def internal_collection
         @collection.map { |record| Naas::Models::SubscriberEmailAddress.new(record) }
