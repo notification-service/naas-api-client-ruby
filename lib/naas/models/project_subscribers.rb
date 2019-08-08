@@ -3,7 +3,7 @@ module Naas
     class ProjectSubscribers
       include Enumerable
 
-      COLUMNS = ['ID', 'Project ID', 'Subscriber ID', 'Code', 'Created At']
+      COLUMNS = ['ID', 'Project ID', 'Subscriber ID', 'Email Addresses', 'Code', 'Created At']
 
       # Return an instance of the project subscribers
       #

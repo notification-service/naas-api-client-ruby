@@ -60,6 +60,13 @@ module Naas
         self.subscriber_email_addresses.any?
       end
 
+      # Proxy to show the list of subscriber email addresses
+      #
+      # @return [String]
+      def subscriber_email_addresses_display_name
+        self.subscriber_email_addresses.display_name
+      end
+
       # Returns true if opted in to the project
       #
       # @return [Boolean]
@@ -140,7 +147,7 @@ module Naas
       #
       # @return [Array]
       def to_a
-        [self.id, self.project_id, self.subscriber_id, self.code, self.created_at]
+        [self.id, self.project_id, self.subscriber_id, self.subscriber_email_addresses_display_name, self.code, self.created_at]
       end
     end
   end
