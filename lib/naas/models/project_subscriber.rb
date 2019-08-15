@@ -126,6 +126,54 @@ module Naas
         @project_subscriber_properties
       end
 
+      # Returns the set of available project properties
+      #
+      # @todo: This is similar to a has_many: through (project)
+      #
+      # @return [Naas::Models::ProjectProperties]
+      def project_properties
+        @project_properties ||= Naas::Models::ProjectProperties.list_by_project_id(self.project_id)
+      end
+
+      # This returns a collection of all project properties
+      # merged with the values set by this subscriber
+      #
+      # @note: This is a WIP to test out this model
+      #
+      # @return [Array<OpenStruct>]
+      def subscriber_project_properties
+        records = []
+
+        self.project_properties.inject(records) do |collection,project_property|
+          record_attributes = {
+            :project_property_id            => project_property.id,
+            :project_subscriber_property_id => nil,
+            :name                           => project_property.name,
+            :key_name                       => project_property.key_name,
+            :description                    => project_property.description,
+            :value                          => nil,
+            :is_subscriber_editable         => project_property.is_subscriber_editable,
+            :is_subscriber_viewable         => project_property.is_subscriber_viewable
+          }
+
+          subscriber_value = self.project_subscriber_properties.find { |r| r.project_property_id == project_property.id }
+
+          if !subscriber_value.nil?
+            subscriber_attributes = {
+              :project_subscriber_property_id => subscriber_value.id,
+              :value                          => subscriber_value.value,
+              :is_subscriber_editable         => subscriber_value.is_subscriber_editable
+            }
+            record_attributes.merge!(subscriber_attributes)
+          end
+
+          collection.push(record_attributes)
+          collection
+        end
+
+        Naas::Models::SubscriberProjectProperties.new(records)
+      end
+
       # Returns true if there are any project subscriber properties
       #
       # @return [Boolean]

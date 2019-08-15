@@ -134,6 +134,10 @@ module Naas
         @attributes['value']
       end
 
+      def value
+        self.value_before_typecast
+      end
+
       def is_subscriber_editable
         @attributes['is_subscriber_editable']
       end
