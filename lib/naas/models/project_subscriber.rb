@@ -97,6 +97,35 @@ module Naas
         self.subscriber_email_addresses.display_name
       end
 
+      # Returns the profile attributes
+      #
+      # @return [Hash]
+      def profile_attributes
+        @attributes.fetch('profile', {})
+      end
+
+      # Returns true if there are profile attributes
+      #
+      # @return [Boolean]
+      def profile_attributes?
+        !self.profile_attributes.empty?
+      end
+
+      # Returns an instance of the profile
+      #
+      # @return [Naas::Models::ProjectSubscriberProfile]
+      def profile
+        return @profile if @profile
+
+        @profile = if self.profile_attributes?
+                     Naas::Models::ProjectSubscriberProfile.new(self.profile_attributes)
+                   else
+                     Naas::Models::ProjectSubscriberProfile.retrieve_by_project_id_and_project_subscriber_id(self.project_id, self.id)
+                   end
+
+        @profile
+      end
+
       # Returns true if opted in to the project
       #
       # @return [Boolean]
