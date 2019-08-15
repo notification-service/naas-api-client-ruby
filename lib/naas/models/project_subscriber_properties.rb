@@ -27,9 +27,31 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.error { ("Failure retrieving the campaigns: %s" % [resp.status]) }
+          Naas::Client.configuration.logger.error { ("Failure retrieving the property subscriber properties: %s" % [resp.status]) }
 
           nil
+        end
+      end
+
+      # Retrieve the instance of a project subscriber property by project
+      #
+      # @param project_id [String]
+      # @param project_subscriber_id [String]
+      # @param id [String]
+      # @param params [Hash]
+      #
+      # @return [Naas::Models::ProjectSubscriberProperty]
+      def self.retrieve_by_project_id_and_project_subscriber_id(project_id, project_subscriber_id, id, params={})
+        request = Naas::Requests::ProjectSubscriberProperties.retrieve_by_project_id_and_project_subscriber_id(project_id, project_subscriber_id, id, params)
+
+        request.on(:success) do |resp|
+          return Naas::Models::ProjectSubscriberProperty.new(resp.data_attributes)
+        end
+
+        request.on(:failure) do |resp|
+          Naas::Client.configuration.logger.error { ("Failure retrieving the project subscriber property: %s" % [resp.status]) }
+
+          return nil
         end
       end
 
