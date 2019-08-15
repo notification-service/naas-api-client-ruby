@@ -34,7 +34,9 @@ module Naas
         route = Naas::Client.routes.find_by_rel(rel)
         url   = route.url_for(params.merge!(project_id: project_id, project_subscriber_id: project_subscriber_id))
 
-        request_body = params
+        request_body = {
+          :project_subscriber_profile => params
+        }
 
         request = Naas::Client.connection.put do |req|
           req.url(url)

@@ -42,6 +42,34 @@ module Naas
         end
       end
 
+      # Retrieve by the project and project subscriber id
+      #
+      # @param project_id [String]
+      # @param project_subscriber_id [String]
+      # @param params [Hash]
+      #
+      # @return [Naas::Models::ProjectSubscriberProfile]
+      def self.update_by_project_id_and_project_subscriber_id(project_id, project_subscriber_id, params={})
+        request = Naas::Requests::ProjectSubscriberProfiles.update_by_project_id_and_project_subscriber_id(project_id, project_subscriber_id, params)
+
+        request.on(:succes) do |resp|
+          data = resp.data_attributes
+          data.merge!('project_id' => project_id)
+          data.merge!('project_subscriber_id' => project_subscsriber_id)
+
+          return Naas::Models::ProjectSubscriberProfiler.new(data)
+        end
+
+        request.on(:failure) do |resp|
+          error           = Naas::Models::Error.new(resp.data_attributes)
+          failure_message = "Failure updating the record: %s" % [error.full_messages.inspect]
+
+          Naas::Client.configuration.logger.error { failure_message }
+
+          raise Naas::Errors::InvalidRequestError.new(failure_message)
+        end
+      end
+
       # Returns the associated project id
       #
       # @return [String]
