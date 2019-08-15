@@ -53,7 +53,7 @@ module Naas
       #
       # @return [Hash]
       def project_attributes
-        @attributes.fetch('project_attributes', {})
+        @attributes.fetch('project', {})
       end
 
       # Returns true if there are project attributes
@@ -83,6 +83,35 @@ module Naas
       # @return [String]
       def project_subscriber_id
         @project_subscriber_id
+      end
+
+      # Returns any project subscsriber attributes
+      #
+      # @return [Hash]
+      def project_subscriber_attributes
+        @attributes.fetch('project_subscriber', {})
+      end
+
+      # Reeturns true if there are project subscriber attributes
+      #
+      # @return [Boolean]
+      def project_subscriber_attributes?
+        !self.project_subscriber_attributes.empty?
+      end
+
+      # Returns the associated project subscriber
+      #
+      # @return [Naas::Models::ProjectSubscriber]
+      def project_subscriber
+        return @project_subscriber if @project_subscriber
+
+        @project_subscriber = if self.project_subscriber_attributes?
+                                Naas::Models::ProjectSubscriber.new(self.project_subscriber_attributes)
+                              else
+                                Naas::Models::ProjectSubscribers.retrieve_by_project_id(self.project_id, self.project_subscriber_id)
+                              end
+
+        @project_subscriber
       end
     end
   end
