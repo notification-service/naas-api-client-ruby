@@ -19,6 +19,42 @@ module Naas
         @attributes['id']
       end
 
+      # Returns the project id
+      #
+      # @return [String]
+      def project_id
+        @attributes['project_id']
+      end
+
+      # Returns the project attributes
+      #
+      # @return [Hash]
+      def project_attributes
+        @attributes.fetch('project', {})
+      end
+
+      # Returns true if there are project attributes
+      #
+      # @return [Boolean]
+      def project_attributes?
+        !self.project_attributes.empty?
+      end
+
+      # Returns an instance of the project
+      #
+      # @return [Naas::Models::Project]
+      def project
+        return @project if @project
+
+        @project = if self.project_attributes?
+                     Naas::Models::Project.new(self.project_properties)
+                   else
+                     Naas::Models::Projects.retrieve(self.project_id)
+                   end
+
+        @project
+      end
+
       # Returns the project property id
       #
       # @return [String]
