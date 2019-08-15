@@ -97,6 +97,42 @@ module Naas
         self.subscriber_email_addresses.display_name
       end
 
+      # Returns the project subscriber properties attributes
+      #
+      # @return [Array]
+      def project_subscriber_properties_attributes
+        @attributes.fetch('project_subscriber_properties', [])
+      end
+
+      # Returns true if there are any project subscriber properties
+      #
+      # @return [Boolean]
+      def project_subscriber_properties_attributes?
+        @attributes.has_key?('project_subscriber_properties')
+      end
+
+      # Returns the associated project subscriber properties
+      #
+      # @return [Naas::Models::ProjectSubscriberProperties]
+      def project_subscriber_properties
+        return @project_subscriber_properties if @project_subscriber_properties
+
+        @project_subscriber_properties = if self.project_subscriber_properties_attributes?
+                                           Naas::Models::ProjectSubscriberProperties.new(self.project_subscriber_properties_attributes)
+                                         else
+                                           Naas::Models::ProjectSubscriberProperties.list_by_project_id_and_project_subscriber_id(self.project_id, self.id)
+                                         end
+
+        @project_subscriber_properties
+      end
+
+      # Returns true if there are any project subscriber properties
+      #
+      # @return [Boolean]
+      def project_subscriber_properties?
+        self.project_subscriber_properties.any?
+      end
+
       # Returns the profile attributes
       #
       # @return [Hash]
