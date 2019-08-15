@@ -142,6 +142,8 @@ module Naas
       #
       # @return [Array<OpenStruct>]
       def subscriber_project_properties
+        return @subscriber_project_properties if @subscriber_project_properties
+
         records = []
 
         self.project_properties.inject(records) do |collection,project_property|
@@ -171,7 +173,7 @@ module Naas
           collection
         end
 
-        Naas::Models::SubscriberProjectProperties.new(records)
+        @subscriber_project_properties = Naas::Models::SubscriberProjectProperties.new(records)
       end
 
       # Returns true if there are any project subscriber properties
