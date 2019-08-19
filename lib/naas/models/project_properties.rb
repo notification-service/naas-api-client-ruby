@@ -155,6 +155,20 @@ module Naas
         self.map(&:to_a)
       end
 
+      # Returns only the subscriber viewable
+      #
+      # @return [Array]
+      def subscriber_viewable
+        self.select(&:subscriber_viewable?)
+      end
+
+      # Returns only the subscriber editable
+      #
+      # @return [Array]
+      def subscriber_editable
+        self.select(&:subscriber_editable?)
+      end
+
       private
       def internal_collection
         @collection.map { |record| Naas::Models::ProjectProperty.new(record) }
