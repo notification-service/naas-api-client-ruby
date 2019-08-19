@@ -19,9 +19,12 @@ module Naas
         end
 
         request.on(:failure) do |resp|
-          Naas::Client.configuration.logger.error { ("Failure retrieving the email notification: %s" % [resp.status]) }
+          error           = Naas::Models::Error.new(resp.data_attributes)
+          failure_message = "Failure creating the record: %s" % [error.full_messages.inspect]
 
-          return nil
+          Naas::Client.configuration.logger.error { failure_message }
+
+          raise Naas::Errors::InvalidRequestError.new(failure_message)
         end
       end
     end

@@ -17,4 +17,4 @@ mkmf.log
 .env
 .rspec
 .DS_Store
-/log
+log/*.log
