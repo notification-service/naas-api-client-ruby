@@ -17,13 +17,18 @@ Naas::Client.configure do |c|
 end
 
 default_options = {
-  :per_page => 10,
-  :page     => 1
+  :per_page   => 10,
+  :page       => 1,
+  :project_id => nil
 }
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: bundle exec bin/projects"
+  opts.banner = "Usage: bundle exec bin/subscribers"
+
+  opts.on('--project-id [VAL]', 'Project ID') do |v|
+    options[:project_id] = v
+  end
 
   opts.on('--page [VAL]', 'Specific page of results') do |v|
     options[:page] = v
@@ -36,13 +41,15 @@ end.parse!
 
 core_options = default_options.merge!(options)
 
-model_request = Naas::Requests::Projects.list(core_options)
+project_id = core_options.delete(:project_id)
+
+model_request = Naas::Requests::ProjectSubscribers.list_by_project_id(project_id, core_options)
 
 records    = []
 pagination = Naas::Models::Pagination.new
 
 model_request.on(:success) do |resp|
-  records    = Naas::Models::Projects.new(resp.data_attributes)
+  records    = Naas::Models::ProjectSubscribers.new(resp.data_attributes)
   pagination = resp.pagination
 end
 

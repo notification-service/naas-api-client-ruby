@@ -81,6 +81,42 @@ module Naas
         @attributes.fetch('campaigns_count', 0).to_i
       end
 
+      # Returns the project properties attributes
+      #
+      # @return [Array]
+      def project_properties_attributes
+        @attributes.fetch('project_properties', [])
+      end
+
+      # Returns true if there are project properties
+      #
+      # @return [Boolean]
+      def project_properties_attributes?
+        @attributes.has_key?('project_properties')
+      end
+
+      # Returns the project properties instance
+      #
+      # @return [Naas::Models::ProjectProperties]
+      def project_properties
+        return @project_properties if @project_properties
+
+        @project_properties = if self.project_properties_attributes?
+                                Naas::Models::ProjectProperties.new(self.project_properties_attributes)
+                              else
+                                Naas::Models::ProjectProperties.list_by_project_id(self.id)
+                              end
+
+        @project_properties
+      end
+
+      # Returns true if there are project properties
+      #
+      # @return [Boolean]
+      def project_properties?
+        self.project_properties.any?
+      end
+
       # Returns the created at timestamp
       #
       # @return [DateTime,NilClass]
