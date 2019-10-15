@@ -78,7 +78,7 @@ module Naas
         begin
           file_object = StringIO.new(file_content)
         rescue TypeError
-          raise Naas::ErrorsInvalidFileError.new("File content is not readable")
+          raise Naas::Errors::InvalidFileError.new("File content is not readable")
         end
 
         self.create_from_file(file_object, mime_type, params)
