@@ -21,6 +21,13 @@ module Naas
         @attributes['id']
       end
 
+      # Returns the account addon ID
+      #
+      # @return [Integer]
+      def account_addon_id
+        @attributes['account_addon_id']
+      end
+
       # Returns the associated project id
       #
       # @return [Integer]
