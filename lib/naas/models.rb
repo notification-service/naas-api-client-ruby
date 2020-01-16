@@ -67,6 +67,9 @@ require File.expand_path('../models/account_smtp_setting', __FILE__)
 require File.expand_path('../models/account_assets', __FILE__)
 require File.expand_path('../models/account_asset', __FILE__)
 
+require File.expand_path('../models/account_addons', __FILE__)
+require File.expand_path('../models/account_addon', __FILE__)
+
 module Naas
   module Models
   end
