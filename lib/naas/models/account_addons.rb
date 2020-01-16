@@ -74,6 +74,31 @@ module Naas
         end
       end
 
+      # Helper method to update from the request
+      #
+      # @param id [String]
+      # @param params [Hash]
+      #
+      # @raises [Naas::InvalidRequestError]
+      #
+      # @return [Naas::Models::AccountAddon]
+      def self.update(id, params={})
+        request = Naas::Requests::AccountAddons.update(id, params)
+
+        request.on(:success) do |resp|
+          return Naas::Models::AccountAddon.new(resp.data_attributes)
+        end
+
+        request.on(:failure) do |resp|
+          error           = Naas::Models::Error.new(resp.data_attributes)
+          failure_message = "Failure updating the record: %s" % [error.full_messages.inspect]
+
+          Naas::Client.configuration.logger.error { failure_message }
+
+          raise Naas::Errors::InvalidRequestError.new(failure_message)
+        end
+      end
+
       def each(&block)
         internal_collection.each(&block)
       end
