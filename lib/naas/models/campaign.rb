@@ -49,6 +49,39 @@ module Naas
         @attributes['description']
       end
 
+      # Returns the account addon attributes
+      #
+      # @return [Boolean]
+      def account_addon_attributes
+        @attributes.fetch('account_addon', {})
+      end
+
+      # Returns true if there are any account addon
+      # attributes
+      #
+      # @return [Boolean]
+      def account_addon_attributes?
+        !self.account_addon_attributes.empty?
+      end
+
+      # Returns the associated account addon
+      #
+      # @return [Naas::Models::AccountAddon]
+      def account_addon
+        @account_addon ||= if self.account_addon_attributes?
+                             Naas::Models::AccountAddon.new(self.account_addon_attributes)
+                           else
+                             Naas::Models::AccountAddons.retrieve(self.account_addon_id)
+                           end
+      end
+
+      # Returns true if there is an account addon
+      #
+      # @return [Boolean]
+      def account_addon?
+        !self.account_addon.nil?
+      end
+
       # Return the associated campaign email templates
       # attributes
       #
