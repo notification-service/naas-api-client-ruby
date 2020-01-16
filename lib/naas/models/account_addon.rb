@@ -27,6 +27,38 @@ module Naas
         @attributes['addon_id']
       end
 
+      # Returns the attributes for the addon
+      #
+      # @return [Hash]
+      def addon_attributes
+        @attributes.fetch('addon', {})
+      end
+
+      # Returns true if there are any addon attributes
+      #
+      # @return [Boolean]
+      def addon_attributes?
+        !self.addon_attributes.empty?
+      end
+
+      # Returns the associated addon
+      #
+      # @return [Naas::Models::Addon]
+      def addon
+        @addon ||= if self.addon_attributes?
+                     Naas::Models::Addon.new(self.addon_attributes)
+                   else
+                     Naas::Models::Addons.retrieve(self.addon_id)
+                   end
+      end
+
+      # Returns true if there is an addon
+      #
+      # @return [Boolean]
+      def addon?
+        !self.addon.nil?
+      end
+
       # Returns the name
       #
       # @return [String]
@@ -40,6 +72,7 @@ module Naas
       def description
         @attributes['description']
       end
+
       # Returns the created at timestamp
       #
       # @return [DateTime,NilClass]
