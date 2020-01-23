@@ -26,11 +26,61 @@ module Naas
         @attributes['account_addon_id']
       end
 
+      # Returns the account addon attributes
+      #
+      # @return [Hash]
+      def account_addon_attributes
+        @attributes.fetch('account_addon', {})
+      end
+
+      # Returns true if there are account addon attributes
+      #
+      # @return [Boolean]
+      def account_addon_attributes?
+        !self.account_addon_attributes.nil? && !self.account_addon_attributes.empty?
+      end
+
+      # Returns the associated Account Addon
+      #
+      # @return [Naas::Models::AccountAddon]
+      def account_addon
+        @account_addon ||= if self.account_addon_attributes?
+                             Naas::Models::AccountAddon.new(self.account_addon_attributes)
+                           else
+                             Naas::Models::AccountAddons.retrieve(self.account_addon_id)
+                           end
+      end
+
       # Returns the subscriber id
       #
       # @return [Integer]
       def subscriber_id
         @attributes['subscriber_id']
+      end
+
+      # Returns the subscriber attributes
+      #
+      # @return [Hash]
+      def subscriber_attributes
+        @attributes.fetch('subscriber', {})
+      end
+
+      # Returns true if there are subscriber attributes
+      #
+      # @return [Boolean]
+      def subscriber_attributes?
+        !self.subscriber_attributes.nil? && !self.subscriber_attributes.empty?
+      end
+
+      # Returns the associated subscriber
+      #
+      # @return [Naas::Models::Subscriber]
+      def subscriber
+        @subscriber ||= if self.subscriber_attributes?
+                          Naas::Models::Subscriber.new(self.subscriber_attributes)
+                        else
+                          Naas::Models::Subscribers.retrieve(self.subscriber_id)
+                        end
       end
 
       # Returns the recipient
