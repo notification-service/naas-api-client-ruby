@@ -193,7 +193,7 @@ module Naas
       #
       # @return [Array]
       def to_a
-        [self.id, self.recipient, self.created_at, self.accepted_at, self.declined_at]
+        [self.id, self.account_addon.name, self.subscriber.full_name, self.recipient, self.created_at, self.accepted_at, self.declined_at]
       end
     end
   end

@@ -3,7 +3,7 @@ module Naas
     class Invitations
       include Enumerable
 
-      COLUMNS = ['ID', 'Recipient', 'Created At', 'Accepted At', 'Declined At']
+      COLUMNS = ['ID', 'Account Addon', 'Recipient', 'Created At', 'Accepted At', 'Declined At']
 
       # Return an instance of the invitations
       #
