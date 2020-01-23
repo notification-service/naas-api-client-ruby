@@ -70,6 +70,9 @@ require File.expand_path('../models/account_asset', __FILE__)
 require File.expand_path('../models/account_addons', __FILE__)
 require File.expand_path('../models/account_addon', __FILE__)
 
+require File.expand_path('../models/invitations', __FILE__)
+require File.expand_path('../models/invitation', __FILE__)
+
 module Naas
   module Models
   end
