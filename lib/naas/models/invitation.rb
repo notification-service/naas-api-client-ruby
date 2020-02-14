@@ -189,6 +189,68 @@ module Naas
         self.links.any?
       end
 
+      # Returns the email notification route
+      #
+      # @return [Naas::Models::Link]
+      def email_notification_route
+        rel   = Naas::Client.rel_for('rels/email-notification')
+        route = self.links.find_by_rel(rel)
+
+        route
+      end
+
+      # Returns true if there is an email notification route
+      #
+      # @return [Boolean]
+      def email_notification_route?
+        !self.email_notification_route.nil?
+      end
+
+      # Returns the email notification request
+      #
+      # @return [Naas::Response]
+      def email_notification_request
+        if self.email_notification_route?
+          request = Naas::Client.connection.get do |req|
+            req.url(self.email_notification_route.url_for)
+            req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+          end
+
+          Naas::Response.new(request)
+        end
+      end
+
+      # Returns true if there is an email notification request
+      #
+      # @return [Boolean]
+      def email_notification_request?
+        !self.email_notification_request.nil?
+      end
+
+      # Returns the association email notification
+      #
+      # @return [Naas::Models::EmailNotification,NilClass]
+      def email_notification
+        return @email_notification if @email_notification
+
+        @email_notification = nil
+
+        if self.email_notification_request?
+          self.email_notification_request.on(:success) do |resp|
+            @email_notification = Naas::Models::EmailNotification.new(resp.data_attributes)
+          end
+        end
+
+        @email_notification
+      end
+
+      # Returns true if there is an email notifcation object
+      #
+      # @return [Boolean]
+      def email_invitation?
+        !self.email_invitation.nil?
+      end
+
       # Returns the record as an array
       #
       # @return [Array]

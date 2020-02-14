@@ -320,7 +320,7 @@ module Naas
         @invitation
       end
 
-      # Returns true if there is an invitaiton object
+      # Returns true if there is an invitation object
       #
       # @return [Boolean]
       def invitation?
