@@ -247,8 +247,8 @@ module Naas
       # Returns true if there is an email notifcation object
       #
       # @return [Boolean]
-      def email_invitation?
-        !self.email_invitation.nil?
+      def email_notification?
+        !self.email_notification.nil?
       end
 
       # Returns the record as an array
