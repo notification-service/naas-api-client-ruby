@@ -51,6 +51,45 @@ module Naas
                            end
       end
 
+      # Returns the sender subscriber id
+      #
+      # @return [Integer]
+      def sender_subscriber_id
+        @attributes['sender_subscriber_id']
+      end
+
+      # Returns the sender subscriber attributes
+      #
+      # @Return [Hash]
+      def sender_subscriber_attributes
+        @attributes.fetch('sender_subscriber', {})
+      end
+
+      # Returns true if there are sender subscriber attributes
+      #
+      # @return [Boolean]
+      def sender_subscriber_attributes?
+        !self.sender_subscriber_attributes.nil? && !self.sender_subscriber_attributes.empty?
+      end
+
+      # Returns the associated sender subscriber
+      #
+      # @return [Naas::Models::Subscriber]
+      def sender_subscriber
+        @sender_subscriber ||= if self.sender_subscriber_attributes?
+                                 Naas::Models::Subscriber.new(self.sender_subscriber_attributes)
+                               else
+                                 Naas::Models::Subscribers.retrieve(self.sender_subscriber_id)
+                               end
+      end
+
+      # Returns the string representation of the sender
+      #
+      # @return [String]
+      def sender
+        @attributes['sender']
+      end
+
       # Returns the subscriber id
       #
       # @return [Integer]
@@ -83,7 +122,7 @@ module Naas
                         end
       end
 
-      # Returns the recipient
+      # Returns the string representation of the recipient
       #
       # @return [String]
       def recipient
@@ -189,6 +228,144 @@ module Naas
         self.links.any?
       end
 
+      # Returns the subscriber email address route
+      #
+      # @return [Naas::Models::Link]
+      def subscriber_email_address_route
+        rel   = Naas::Client.rel_for('rels/subscriber-recipient-email-address')
+        route = self.links.find_by_rel(rel)
+
+        route
+      end
+
+      # Returns true if there is a subscriber email address
+      # route
+      #
+      # @return [Boolean]
+      def subscriber_email_address_route?
+        !self.subscriber_email_address_route.nil?
+      end
+
+      # Returns the subscriber email address request
+      #
+      # @return [Naas::Response,NilClass]
+      def subscriber_email_address_request
+        return @subscriber_email_address_request if @subscriber_email_address_request
+
+        @subscriber_email_address_request = nil
+
+        if self.subscriber_email_address_route?
+          request = Naas::Client.connection.get do |req|
+            req.url(self.subscriber_email_address_route.url_for)
+            req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+          end
+
+          @subscriber_email_address_request = Naas::Response.new(request)
+        end
+
+        @subscriber_email_address_request
+      end
+
+      # Returns true if there is a subscriber email address request
+      #
+      # @return [Boolean]
+      def subscriber_email_address_request?
+        !self.subscriber_email_address_request.nil?
+      end
+
+      # Returns the subscriber email address domain model
+      #
+      # @return [Naas::Models::SubscriberEmailAddress,NilClass]
+      def subscriber_email_address
+        return @subscriber_email_address if @subscriber_email_address
+
+        @subscriber_email_address = nil
+
+        if self.subscriber_email_address_request?
+          self.subscriber_email_address_request.on(:success) do |resp|
+            @subscriber_email_address = Naas::Models::SubscriberEmailAddress.new(resp.data_attributes)
+          end
+        end
+
+        @subscriber_email_address
+      end
+
+      # Returns true if there is a subscriber email address
+      #
+      # @return [Boolean]
+      def subscriber_email_address?
+        !self.subscriber_email_address.nil?
+      end
+
+      # Returns the subscriber sender email address route
+      #
+      # @return [Naas::Models::Link]
+      def sender_subscriber_email_address_route
+        rel   = Naas::Client.rel_for('rels/subscriber-sender-email-address')
+        route = self.links.find_by_rel(rel)
+
+        route
+      end
+
+      # Returns true if there is a sender subscriber email address
+      # route
+      #
+      # @return [Boolean]
+      def sender_subscriber_email_address_route?
+        !self.sender_subscriber_email_address_route.nil?
+      end
+
+      # Returns the sender subscriber email address request
+      #
+      # @return [Naas::Response,NilClass]
+      def sender_subscriber_email_address_request
+        return @sender_subscriber_email_address_request if @sender_subscriber_email_address_request
+
+        @sender_subscriber_email_address_request = nil
+
+        if self.sender_subscriber_email_address_route?
+          request = Naas::Client.connection.get do |req|
+            req.url(self.sender_subscriber_email_address_route.url_for)
+            req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+          end
+
+          @sender_subscriber_email_address_request = Naas::Response.new(request)
+        end
+
+        @sender_subscriber_email_address_request
+      end
+
+      # Returns true if there is a sender subscriber email address request
+      #
+      # @return [Boolean]
+      def sender_subscriber_email_address_request?
+        !self.sender_subscriber_email_address_request.nil?
+      end
+
+      # Returns the sender subscriber email address domain model
+      #
+      # @return [Naas::Models::SubscriberEmailAddress,NilClass]
+      def sender_subscriber_email_address
+        return @sender_subscriber_email_address if @sender_subscriber_email_address
+
+        @sender_subscriber_email_address = nil
+
+        if self.sender_subscriber_email_address_request?
+          self.sender_subscriber_email_address_request.on(:success) do |resp|
+            @sender_subscriber_email_address = Naas::Models::SubscriberEmailAddress.new(resp.data_attributes)
+          end
+        end
+
+        @sender_subscriber_email_address
+      end
+
+      # Returns true if there is a sender subscriber email address
+      #
+      # @return [Boolean]
+      def sender_subscriber_email_address?
+        !self.sender_subscriber_email_address.nil?
+      end
+
       # Returns the email notification route
       #
       # @return [Naas::Models::Link]
@@ -208,7 +385,7 @@ module Naas
 
       # Returns the email notification request
       #
-      # @return [Naas::Response]
+      # @return [Naas::Response,NilClass]
       def email_notification_request
         if self.email_notification_route?
           request = Naas::Client.connection.get do |req|
@@ -255,7 +432,7 @@ module Naas
       #
       # @return [Array]
       def to_a
-        [self.id, self.account_addon.name, self.subscriber.full_name, self.recipient, self.created_at, self.accepted_at, self.declined_at]
+        [self.id, self.account_addon.name, self.sender_subscriber.full_name, self.sender, self.subscriber.full_name, self.recipient, self.created_at, self.accepted_at, self.declined_at]
       end
     end
   end
