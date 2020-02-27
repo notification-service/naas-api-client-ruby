@@ -19,6 +19,53 @@ module Naas
         @attributes['id']
       end
 
+      # Returns the accepted invitation id
+      #
+      # @return [String,NilClass]
+      def accepted_invitation_id
+        @attributes['accepted_invitation_id']
+      end
+
+      # Returns true if there is an accepted invitation id
+      #
+      # @return [Boolean]
+      def accepted_invitation_id?
+        !self.accepted_invitation_id.nil? && !self.accepted_invitation_id.empty?
+      end
+
+      # Returns the eager loaded accepted invitation
+      #
+      # @return [Hash]
+      def accepted_invitation_attributes
+        @attributes.fetch('accepted_invitation', {})
+      end
+
+      # Returns true if there are accepted invitation attributes
+      #
+      # @return [Boolean]
+      def accepted_invitation_attributes?
+        !self.accepted_invitation_attributes.nil? && !self.accepted_invitation_attributes.empty?
+      end
+
+      # Returns the accepted invitation record
+      #
+      # @return [Naas::Models::Invitation,NilClass]
+      def accepted_invitation
+        @accepted_invitation ||= if self.accepted_invitation_attributes?
+                                   Naas::Models::Invitation.new(self.accepted_invitation_attributes)
+                                 elsif self.accepted_invitation_id?
+                                   Naas::Models::Invitations.retrieve(self.accepted_invitation_id)
+                                 end
+
+      end
+
+      # Returns true if there is an accepted invitation
+      #
+      # @return [Boolean]
+      def accepted_invitation?
+        !self.accepted_invitation.nil?
+      end
+
       # Returns the account addon id
       #
       # @return [Integer]
@@ -162,6 +209,16 @@ module Naas
       end
       alias is_declined? is_declined
       alias declined? is_declined
+
+      # Returns true if this has been accepted
+      # by another invitation
+      #
+      # @return [Boolean]
+      def has_accepted_other
+        @attributes['has_accepted_other']
+      end
+      alias has_accepted_other? has_accepted_other
+      alias accepted_other? has_accepted_other
 
       # Returns the accepted at timestamp
       #
