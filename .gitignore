@@ -18,3 +18,5 @@ mkmf.log
 .rspec
 .DS_Store
 log/*.log
+
+clean_logs
