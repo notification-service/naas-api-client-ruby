@@ -264,6 +264,68 @@ module Naas
       def links?
         self.links.any?
       end
+
+      # Returns the invitation route
+      #
+      # @return [Naas::Models::Link]
+      def invitation_route
+        rel   = Naas::Client.rel_for('rels/invitation')
+        route = self.links.find_by_rel(rel)
+
+        route
+      end
+
+      # Returns true if there is an invitation route
+      #
+      # @return [Boolean]
+      def invitation_route?
+        !self.invitation_route.nil?
+      end
+
+      # Returns the invitation request
+      #
+      # @return [Naas::Response]
+      def invitation_request
+        if self.invitation_route?
+          request = Naas::Client.connection.get do |req|
+            req.url(self.invitation_route.url_for)
+            req.headers['Accept'] = 'application/vnd.naas.json; version=1'
+          end
+
+          Naas::Response.new(request)
+        end
+      end
+
+      # Returns true if there is an invitation request
+      #
+      # @return [Boolean]
+      def invitation_request?
+        !self.invitation_request.nil?
+      end
+
+      # Returns the association invitation
+      #
+      # @return [Naas::Models::Invitation,NilClass]
+      def invitation
+        return @invitation if @invitation
+
+        @invitation = nil
+
+        if self.invitation_request?
+          self.invitation_request.on(:success) do |resp|
+            @invitation = Naas::Models::Invitation.new(resp.data_attributes)
+          end
+        end
+
+        @invitation
+      end
+
+      # Returns true if there is an invitation object
+      #
+      # @return [Boolean]
+      def invitation?
+        !self.invitation.nil?
+      end
     end
   end
 end

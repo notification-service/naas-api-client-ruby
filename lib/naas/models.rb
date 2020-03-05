@@ -12,6 +12,9 @@ require File.expand_path('../models/link', __FILE__)
 require File.expand_path('../models/data_types', __FILE__)
 require File.expand_path('../models/data_type', __FILE__)
 
+require File.expand_path('../models/addons', __FILE__)
+require File.expand_path('../models/addon', __FILE__)
+
 require File.expand_path('../models/projects', __FILE__)
 require File.expand_path('../models/project', __FILE__)
 
@@ -51,6 +54,7 @@ require File.expand_path('../models/email_notifications', __FILE__)
 require File.expand_path('../models/email_notification', __FILE__)
 
 require File.expand_path('../models/email_notification_basic', __FILE__)
+require File.expand_path('../models/email_notification_invitation_basic', __FILE__)
 
 require File.expand_path('../models/email_notification_deliveries', __FILE__)
 require File.expand_path('../models/email_notification_delivery', __FILE__)
@@ -63,6 +67,12 @@ require File.expand_path('../models/account_smtp_setting', __FILE__)
 
 require File.expand_path('../models/account_assets', __FILE__)
 require File.expand_path('../models/account_asset', __FILE__)
+
+require File.expand_path('../models/account_addons', __FILE__)
+require File.expand_path('../models/account_addon', __FILE__)
+
+require File.expand_path('../models/invitations', __FILE__)
+require File.expand_path('../models/invitation', __FILE__)
 
 module Naas
   module Models

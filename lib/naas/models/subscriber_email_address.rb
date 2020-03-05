@@ -26,6 +26,31 @@ module Naas
         @attributes['subscriber_id']
       end
 
+      # Returns the subscriber attributes
+      #
+      # @return [Hash]
+      def subscriber_attributes
+        @attributes.fetch('subscriber', {})
+      end
+
+      # Returns true if there are subscriber attributes
+      #
+      # @return [Boolean]
+      def subscriber_attributes?
+        !self.subscriber_attributes.nil? && !self.subscriber_attributes.empty?
+      end
+
+      # Returns the Subscriber domain model
+      #
+      # @return [Naas::Models::Subscriber]
+      def subscriber
+        @subscriber ||= if self.subscriber_attributes?
+                          Naas::Models::Subscriber.new(self.subscriber_attributes)
+                        else
+                          Naas::Models::Subscribers.retrieve(self.subscriber_id)
+                        end
+      end
+
       # Returns the email address
       #
       # @return [String]

@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+
+require 'naas/client'
+require 'optparse'
+require 'terminal-table'
+
+request_logger_path = File.expand_path('../../log', __FILE__)
+request_logger_file = File.expand_path('requests.log', request_logger_path)
+request_logger      = Logger.new(request_logger_file)
+
+Naas::Client.configure do |c|
+  c.request_logger = request_logger
+end
+
+default_options = {
+  :per_page => 10,
+  :page     => 1
+}
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: bundle exec bin/addons"
+
+  opts.on('--page [VAL]', 'Specific page of results') do |v|
+    options[:page] = v
+  end
+
+  opts.on('--per-page [VAL]', 'Items per page') do |v|
+    options[:per_page] = v
+  end
+end.parse!
+
+core_options = default_options.merge!(options)
+
+records  = Naas::Models::Addons.list(core_options)
+title    = records.class.name
+rows     = records.to_a
+headings = records.headings
+
+table = Terminal::Table.new(rows: rows, headings: headings, title: title)
+puts table.to_s
