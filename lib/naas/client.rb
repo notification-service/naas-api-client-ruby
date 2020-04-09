@@ -48,7 +48,7 @@ module Naas
     # @return [Naas::Connection] Faraday Response Delegator
     def self.connection
       @connection ||= Naas::Connection.new(url: self.configuration.api_host) do |builder|
-        builder.response(:json, content_type: /\bjson$/)
+        builder.response(:json, content_type: /\bjson/)
 
         builder.response(:logger, self.configuration.request_logger)
 
