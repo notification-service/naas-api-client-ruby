@@ -17,6 +17,7 @@ require 'naas/utilities'
 
 require "naas/requests"
 require "naas/models"
+require "naas/serializers"
 
 module Naas
   module Client
