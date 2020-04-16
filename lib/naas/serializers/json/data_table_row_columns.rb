@@ -14,9 +14,16 @@ module Naas
           internal_collection.each(&block)
         end
 
+        def at_index(index_number)
+          self.select { |r| r.index.to_i == index_number.to_i }
+        end
+
         private
         def internal_collection
-          @collection.map { |record| Naas::Serializers::Json::DataTableRowColumn.new(record) }
+          @collection.each_with_index.map do |record,i|
+            record.merge!({ 'index': i })
+            Naas::Serializers::Json::DataTableRowColumn.new(record)
+          end
         end
       end
     end

@@ -14,6 +14,10 @@ module Naas
           internal_collection.each(&block)
         end
 
+        def at_column(column_number)
+          self.map(&:columns).map { |r| r.at_index(column_number) }.flatten
+        end
+
         private
         def internal_collection
           @collection.map { |record| Naas::Serializers::Json::DataTableRow.new(record) }

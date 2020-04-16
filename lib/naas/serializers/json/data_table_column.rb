@@ -6,6 +6,10 @@ module Naas
           @attributes = attributes
         end
 
+        def index
+          @attributes[:index].to_i
+        end
+
         def id
           @attributes['id']
         end
