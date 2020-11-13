@@ -44,38 +44,6 @@ module Naas
 
         Naas::Response.new(request)
       end
-
-      # Enable the send grid setting
-      #
-      # @return [Naas::Response]
-      def self.enable_send_grid
-        rel   = Naas::Client.rel_for('rels/account-settings-enable-send-grid')
-        route = Naas::Client.routes.find_by_rel(rel)
-        url   = route.url_for
-
-        request = Naas::Client.connection.post do |req|
-          req.url(url)
-          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
-        end
-
-        Naas::Response.new(request)
-      end
-
-      # Disable the send grid setting
-      #
-      # @return [Naas::Response]
-      def self.disable_send_grid
-        rel   = Naas::Client.rel_for('rels/account-settings-disable-send-grid')
-        route = Naas::Client.routes.find_by_rel(rel)
-        url   = route.url_for
-
-        request = Naas::Client.connection.post do |req|
-          req.url(url)
-          req.headers['Accept'] = 'application/vnd.naas.json; version=1'
-        end
-
-        Naas::Response.new(request)
-      end
     end
   end
 end

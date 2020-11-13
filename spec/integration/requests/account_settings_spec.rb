@@ -32,30 +32,4 @@ RSpec.describe(Naas::Requests::AccountSettings, type: :integration) do
       end
     end
   end
-
-  describe ".enable_send_grid" do
-    it "enables if not yet set" do
-      described_class.disable_send_grid
-
-      expect(described_class.enable_send_grid.status).to eq(200)
-    end
-
-    it "returns a 409 if already set" do
-      described_class.enable_send_grid
-
-      expect(described_class.enable_send_grid.status).to eq(409)
-    end
-
-    it "disables if set" do
-      described_class.enable_send_grid
-
-      expect(described_class.disable_send_grid.status).to eq(200)
-    end
-
-    it "returns a 200 if already disabled" do
-      described_class.disable_send_grid
-
-      expect(described_class.disable_send_grid.status).to eq(200)
-    end
-  end
 end
