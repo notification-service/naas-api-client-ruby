@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["nate@deviceindependent.com"]
   spec.summary       = %q{ Client for the NAAS API.}
   spec.description   = %q{ Client for interacting with the NAAS API.}
-  spec.homepage      = "https://github.com/quicksprout/naas-api-client-ruby.git"
+  spec.homepage      = "https://github.com/notification-service/naas-api-client-ruby.git"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
