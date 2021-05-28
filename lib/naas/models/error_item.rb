@@ -38,7 +38,7 @@ module Naas
       #
       # @return [String]
       def full_message
-        self.message
+        @attributes['full_message']
       end
     end
   end
