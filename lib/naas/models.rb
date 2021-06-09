@@ -74,6 +74,9 @@ require File.expand_path('../models/account_addon', __FILE__)
 require File.expand_path('../models/invitations', __FILE__)
 require File.expand_path('../models/invitation', __FILE__)
 
+# Oauth context
+require File.expand_path('../models/oauth', __FILE__)
+
 module Naas
   module Models
   end
