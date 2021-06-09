@@ -156,6 +156,20 @@ module Naas
     def self.api_host
       self.configuration.api_host
     end
+
+    # Returns the client id ENV
+    #
+    # @Return [String,NilClass]
+    def self.client_id
+      ENV['NAAS_CLIENT_ID']
+    end
+
+    # Returns the client secret ENV
+    #
+    # @return [String,NilClass]
+    def self.client_secret
+      ENV['NAAS_CLIENT_SECRET']
+    end
   end
 end
 
