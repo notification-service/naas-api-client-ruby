@@ -23,6 +23,9 @@ require File.expand_path('../requests/account_addon/statistics', __FILE__)
 require File.expand_path('../requests/account_assets', __FILE__)
 require File.expand_path('../requests/invitations', __FILE__)
 
+# OAuth Base
+require File.expand_path('../requests/oauth', __FILE__)
+
 module Naas
   module Requests
   end
