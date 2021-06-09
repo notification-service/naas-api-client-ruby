@@ -23,6 +23,7 @@ module Naas
           request = Naas::Client.connection.post do |req|
             req.url(url)
             req.headers.delete('Authorization')
+            req.headers['Accept'] = 'application/json'
             req.body = MultiJson.dump(request_params)
           end
 
@@ -44,6 +45,7 @@ module Naas
           request = Naas::Client.connection.post do |req|
             req.url(url)
             req.headers.delete('Authorization')
+            req.headers['Accept'] = 'application/json'
             req.body = MultiJson.dump(request_params)
           end
 
@@ -66,6 +68,7 @@ module Naas
           request = Naas::Client.connection.post do |req|
             req.url(url)
             req.headers.delete('Authorization')
+            req.headers['Accept'] = 'application/json'
             req.body = MultiJson.dump(request_params)
           end
 
@@ -88,6 +91,7 @@ module Naas
           request = Naas::Client.connection.post do |req|
             req.url(url)
             req.headers.delete('Authorization')
+            req.headers['Accept'] = 'application/json'
             req.body = MultiJson.dump(request_params)
           end
 

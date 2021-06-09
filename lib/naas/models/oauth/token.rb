@@ -44,7 +44,7 @@ module Naas
 
             error = Naas::Models::Oauth::Error.new(response_body)
 
-            self
+            return nil
           end
         end
 
@@ -62,7 +62,7 @@ module Naas
 
             error = Naas::Models::Oauth::Error.new(response_body)
 
-            self
+            return nil
           end
         end
 
@@ -80,7 +80,7 @@ module Naas
 
             error = Naas::Models::Oauth::Error.new(response_body)
 
-            self
+            return nil
           end
         end
 
