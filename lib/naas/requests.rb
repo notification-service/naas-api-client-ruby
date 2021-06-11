@@ -26,6 +26,9 @@ require File.expand_path('../requests/invitations', __FILE__)
 # OAuth Base
 require File.expand_path('../requests/oauth', __FILE__)
 
+# Auth Base
+require File.expand_path('../requests/auth', __FILE__)
+
 module Naas
   module Requests
   end
